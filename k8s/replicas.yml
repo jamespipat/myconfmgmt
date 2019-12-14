@@ -23,3 +23,5 @@ spec:
         image: darealmc/nginx-k8s:v1
         ports:
         - containerPort: 80
+        
+# fix bug
