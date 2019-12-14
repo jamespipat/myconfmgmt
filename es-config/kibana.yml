@@ -1,0 +1,77 @@
+path.data: /var/kibana/data
+
+server.host: "192.168.84.128"
+
+xpack.security.sessionTimeout: 600000
+
+elasticsearch.hosts:
+  - https://192.168.84.128:9200
+  - https://192.168.84.129:9200
+  - https://192.168.84.133:9200
+
+
+# production cluster 
+elasticsearch.username: "kibana"
+elasticsearch.password: "kibanapassword"
+
+# monitoring cluster (monitoring_user built-in role)
+xpack.monitoring.elasticsearch.username: "metricbeat"
+xpack.monitoring.elasticsearch.password: "1q2w3e4r"
+
+
+
+# Security with client browser
+server.ssl.enabled: true
+server.ssl.key: /path/to/your/server.key
+server.ssl.certificate: /path/to/your/server.crt
+
+elasticsearch.hosts: ["https://<your_elasticsearch_host>.com:9200"]
+# if using your own generated CA for signing ES
+elasticsearch.ssl.certificateAuthorities: /path/to/your/cacert.pem
+elasticsearch.ssl.verificationMode: certificate
+
+# Configure Kibana to connect to the Elasticsearch monitoring cluster via HTTPS
+xpack.monitoring.elasticsearch.hosts: ["https://<your_monitoring_cluster>:9200"]
+# If using your own CA self signing
+xpack.monitoring.elasticsearch.ssl.certificateAuthorities: /path/to/your/cacert.pem
+
+# Disable the default collection of Kibana monitoring metrics.
+xpack.monitoring.kibana.collection.enabled: false
+
+###########################################################################################
+path.data: /var/kibana/data
+
+server.host: "192.168.84.134"
+
+xpack.security.sessionTimeout: 600000
+
+# connecting to elasticsearch cluster
+
+elasticsearch.hosts:
+  - https://192.168.84.128:9200
+  - https://192.168.84.129:9200
+  - https://192.168.84.133:9200
+
+# connecting to monitoring cluster
+xpack.monitoring.elasticsearch.hosts:
+  - https://192.168.84.134:9200
+  - https://192.168.84.135:9200
+
+xpack.monitoring.kibana.collection.enabled: false
+
+
+
+elasticsearch.username: "monitor"
+elasticsearch.password: "1q2w3e4r"
+
+
+xpack.monitoring.elasticsearch.username: "agent"
+xpack.monitoring.elasticsearch.password: "Ps7ZShsL"
+
+# SSL production cluster
+
+elasticsearch.ssl.verificationMode: certificate
+
+
+# SSL monitoring cluster
+xpack.monitoring.elasticsearch.ssl.certificateAuthorities: /etc/elasticsearch/certs/monitor1.pem

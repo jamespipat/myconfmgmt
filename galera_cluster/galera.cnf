@@ -1,0 +1,32 @@
+[mariadb]
+binlog_format=ROW
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+innodb_flush_log_at_trx_commit=0
+bind-address=192.168.200.102
+user=mysql
+log-error=/var/log/mysql/mysqld.log
+#log-bin
+#log-basename=galeratest
+
+[galera]
+# Galera cluster configuration
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_cluster_address=gcomm://192.168.200.101,192.168.200.102,192.168.200.103
+#wsrep_cluster_address=gcomm://
+wsrep_cluster_name=galeratest
+wsrep_on=ON
+wsrep_sst_method=mariabackup
+wsrep_sst_auth=mariabackup:1q2w3e4r
+wsrep_provider_options="gcache.size=300M; gcache.page_size=300M"
+wsrep_slave_threads=4
+
+# Cluster node configuration
+wsrep_node_address=192.168.200.102
+wsrep_node_name=galera03
+
+
+
+[sst]
+sst-log-archive=0
+sst-log-archive-dir=/var/log/mysql/sst/

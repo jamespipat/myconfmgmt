@@ -1,0 +1,11 @@
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts:
+    - https://192.168.84.134:9200
+    - https://192.168.84.135:9200
+
+  # Optional protocol and basic auth credentials.
+  protocol: "https"
+  username: "agent"
+  password: "Ps7ZShsL"
+

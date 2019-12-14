@@ -1,0 +1,42 @@
+path:
+  logs: /var/log/elasticsearch
+  data: /var/elasticsearch/data
+
+# Network
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+discovery.seed_hosts:
+  - 192.168.84.134
+  - 192.168.84.135
+
+# discovery.seed_providers: file
+
+cluster.name: monitoring1
+cluster.initial_master_nodes:
+  - 192.168.84.134
+  - 192.168.84.135
+
+# node
+node.master: true 
+node.voting_only: false 
+node.data: true 
+node.ingest: true 
+node.ml: false 
+cluster.remote.connect: false
+
+
+# node-node communication
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/certs/monitor1.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/certs/monitor1.p12
+
+# node-client communication
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: /etc/elasticsearch/certs/monitor1.p12
+xpack.security.http.ssl.truststore.path: /etc/elasticsearch/certs/monitor1.p12
+
+
+# Run metricbeat modules disable system command

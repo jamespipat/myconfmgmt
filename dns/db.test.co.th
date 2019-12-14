@@ -1,0 +1,32 @@
+$ORIGIN test.co.th.
+$TTL    1d
+@   IN  SOA ns1.test.co.th.   admin.test.co.th. (
+                   2019101301        ; Serial number
+                        10800        ; Refresh
+                         1200        ; Retry
+                      3600000        ; Expire
+                         3600 );     ; Negative Cache TTL
+
+@ IN DNSKEY 256 3 10 AwEAAcA4ONU0dW+kDK/5wzgT3EFWQw13++D0Ptf3Bi3+0/hTm5faK2sx 6/9ce+DEI9Jw+K68s2AIkOVRo1BQiHCFLbiglr/rt2HS5QEIY3aEe3ny dr8Bu5WGLniURWexwhutBHAuHHFGDoxQy0036st95/nsBAZv4Sr5EC9y 9V1AknlIKxh1I7V5qbAGevuKEjmcH9UQ9u6pfyMlvc9cV73a2YO/bUXi 4+c/t0bSirGsBxMMw7KhjTmO9r3YfQM8OA4HhDdWzk5icGsrJc9BTp0o V3pA148bh3A6DtC6SQ7YotHK6jZ5J+ezjLqfwEuFEgoPlvzjnnBmDz/u tEL2z2qnhh0=
+
+; NS records 
+   IN  NS  ns1.test.co.th.
+;   IN  NS  ns2.test.co.th.
+
+
+; A records
+ns1                 IN  A   192.168.84.253
+elastic1            IN  A   192.168.84.128
+elastic2            IN  A   192.168.84.129
+elastic3            IN  A   192.168.84.133
+monitor1            IN  A   192.168.84.134
+monitor2            IN  A   192.168.84.135
+control             IN  A   192.168.84.130
+proxy1              IN  A   192.168.84.136
+mail                IN  A   192.168.84.223
+ldap                IN  A   192.168.84.252
+
+
+
+; mail records
+   IN MX 10 mail.test.co.th.

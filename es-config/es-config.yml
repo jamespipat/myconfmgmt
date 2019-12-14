@@ -1,0 +1,111 @@
+path:
+  logs: /var/log/elasticsearch
+  data: /var/elasticsearch/data
+
+
+# Network
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+discovery.seed_hosts:
+  - 192.168.84.128
+  - 192.168.84.129
+  - 192.168.84.131
+
+# discovery.seed_providers: file
+
+cluster.name: develop1
+cluster.initial_master_nodes:
+  - 192.168.84.128
+  - 192.168.84.129
+
+# Node
+node.name: node1
+node.master: true 
+node.voting_only: false 
+node.data: false 
+node.ingest: false 
+node.ml: false 
+xpack.ml.enabled: true 
+cluster.remote.connect: false 
+
+
+
+
+# Shard allocation
+
+cluster.routing.allocation.disk.watermark.high: 90%
+cluster.info.update.interval: 5m
+
+# Local Gateway
+gateway.recover_after_time: 3m
+gateway.recover_after_master_nodes: 2
+
+# indices
+indices.breaker.total.use_real_memory: true
+indices.breaker.total.limit: 90%
+
+indices.breaker.request.limit: 50%
+
+indices.fielddata.cache.size: 3GB
+
+
+# Security
+xpack.security.enabled: true
+xpack.security.authc.accept_default_password: false
+xpack.security.authc.password_hashing.algorithm: bcrypt
+#xpack.security.authc.anonymous.authz_exception: true
+#xpack.security.authc:
+#  anonymous:
+#    username: anonymous_user 
+#    roles: role1, role2 
+#    authz_exception: true
+
+# between node
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/certs/node1.p12 
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/certs/node1.p12
+
+
+# client
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: /etc/elasticsearch/certs/node1.p12 
+xpack.security.http.ssl.truststore.path: /etc/elasticsearch/certs/node1.p12 
+xpack.security.http.ssl.client_authentication: optional
+
+# Authentication realms
+xpack.security.authc.realms:
+  native:
+    realm1:
+      order: 0
+  file:
+    realm2:
+      order: 1
+
+# Monitoring Cluster with metricbeat(production cluster)
+
+xpack.monitoring.collection.enabled: true
+xpack.monitoring.elasticsearch.collection.enabled: false
+
+
+
+
+
+
+# add keystore 
+# bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+# bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+# bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+# bin/elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password
+# File descriptor add "elasticsearch  -  nofile  65535" to /etc/default/limits.conf 
+# Memory lock add "LimitMEMLOCK=infinity" in [service] block elasticsearch.service file
+# Max file size add "elasticsearch  -  fsize  unlimited" to /etc/default/limits.conf
+# Maximum size virtual memory add "elasticsearch  -  as  unlimited" to /etc/default/limits.conf
+
+
+
+# what's next
+gen CA of ES with pem format to use with Kibana
+

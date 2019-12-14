@@ -1,0 +1,5 @@
+zone "test.co.th" {
+    type master;
+    file "/etc/bind/zones/db.test.co.th";
+#    allow-transfer { slave; };
+};

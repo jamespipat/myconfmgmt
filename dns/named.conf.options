@@ -1,0 +1,43 @@
+option {
+    forwarders {
+        1.1.1.1;
+        1.0.0.1;
+    };
+    recursive yes;
+    allow-recursion { local; };
+    allow-transfer { none; };
+    listen-on { 192.168.84.253; };
+#    allow-query { none; };
+#    allow-update { none };
+    dnssec-enable   yes;
+    dnssec-validation   yes;
+
+};
+
+
+acl "local" {
+    192.168.84.0/24;
+};
+
+
+
+; rndc remote control
+/* controls {
+    inet 127.0.0.1 allow { 127.0.0.1 }
+
+}; */
+
+
+how to use dnssec
+1.generate zsk and ksk
+- dnssec-keygen -a RSASHA512 -b 2048 -n ZONE test.co.th
+- dnssec-keygen -a RSASHA512 -b 2048 -f KSK -n ZONE test.co.th
+2.add zsk key DNSKEY record
+3. add option in options statement
+    dnssec-enable   yes;
+    dnssec-validation   yes;
+4. include pubkey of zsk and ksk in a file or add record to zone file
+5. sign zone file with private key 
+dnssec-signzone -o test.co.th -N increment -e now+90days -k /root/ksk/Ktest.co.th.+010+15516.private /etc/bind/zones/db.test.co.th /root/zsk/Ktest.co.th.+010+51803.private
+6.you get signed zone file
+7. rndc reconfig && rndc flush
