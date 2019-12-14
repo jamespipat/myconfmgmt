@@ -1,0 +1,39 @@
+---
+- name: Install packages requirement
+  apt:
+    name:
+      - net-tools
+      - bash-completion
+      - traceroute
+      - gnupg
+      - python-apt
+      - curl
+      - wget
+      - firewalld      
+    update_cache: yes
+    state: latest
+  when: ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+
+- name: Aliasing ls command
+  lineinfile:
+    path: /etc/profile
+    regexp: 'alias ls'
+    insertafter: 'EOF'
+    state: present
+    line: alias ls='ls --color=auto'
+  when: ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+
+- name: Changing history size
+  blockinfile:
+    path: /root/.bashrc
+    insertafter: "EOF"
+    block: |
+      export HISTSIZE=
+      export HISTFILESIZE=
+  when: ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+
+- name: Changing hostname
+  command: /usr/bin/hostnamectl set-hostname "{{ name }}"
+
+
+    

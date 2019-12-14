@@ -1,0 +1,8 @@
+---
+- import_tasks: centos7-nginx.yml
+  tags: centos7-nginx
+
+- import_tasks: debian10-nginx.yml
+  tags: debian10-nginx
+
+  

@@ -1,0 +1,56 @@
+---
+- name: Install packages requirement
+  yum:
+    name:
+      - epel-release
+      - bash-completion
+      - traceroute
+      - wget
+      - curl
+    state: latest
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+# - name: Adding pubkey
+#   block:
+#     - name: Create .ssh directory
+#       file:
+#         path: ~/.ssh
+#         state: directory
+#         mode: 0750
+#         owner: root
+#         group: root
+#     - name: Adding pubkey
+#       template:
+#         src: ../templates/pubkey.j2
+#         dest: ~/.ssh/authorized_keys
+#         mode: 0600
+#         owner: root
+#         group: root
+
+- name: Aliasing ls command
+  lineinfile:
+    path: /etc/profile
+    regexp: 'alias ls'
+    insertafter: 'EOF'
+    state: present
+    line: alias ls='ls --color=auto'
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Changing history size
+  blockinfile:
+    path: /root/.bashrc
+    insertafter: "EOF"
+    block: |
+      export HISTSIZE=
+      export HISTFILESIZE=
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Changing hostname
+  command: /usr/bin/hostnamectl set-hostname "{{ name }}"
+
+    

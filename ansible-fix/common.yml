@@ -1,0 +1,9 @@
+---
+- hosts: '{{ hostnames }}'
+  vars:
+    name: cluster2.test.co.th
+
+  roles: 
+    - common
+
+    

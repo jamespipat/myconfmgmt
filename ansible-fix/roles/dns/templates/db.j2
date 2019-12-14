@@ -1,0 +1,39 @@
+$ORIGIN test.co.th.
+$TTL    1d
+@   IN  SOA ns1.test.co.th.   admin.test.co.th. (
+                   2019101301        ; Serial number
+                        10800        ; Refresh
+                         1200        ; Retry
+                      3600000        ; Expire
+                         3600 );     ; Negative Cache TTL
+
+; NS records 
+   IN  NS  ns1.test.co.th.
+;   IN  NS  ns2.test.co.th.
+
+
+; A records
+web1                IN  A   192.168.84.90
+elastic1            IN  A   192.168.84.128
+elastic2            IN  A   192.168.84.129
+
+control             IN  A   192.168.84.130
+
+elastic3            IN  A   192.168.84.133
+
+monitor1            IN  A   192.168.84.134
+monitor2            IN  A   192.168.84.135
+
+proxy1              IN  A   192.168.84.136
+
+cluster1            IN  A   192.168.84.137
+cluster2            IN  A   192.168.84.138
+
+mail                IN  A   192.168.84.223
+ldap                IN  A   192.168.84.252
+ns1                 IN  A   192.168.84.253
+
+
+
+; mail records
+   IN MX 10 mail.test.co.th.

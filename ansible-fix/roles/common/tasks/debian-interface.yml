@@ -1,0 +1,16 @@
+---
+- name: Changing IP
+  template:
+    src: ../templates/interfaces.j2
+    dest: /etc/network/interfaces
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Adding Nameserver
+  template:
+    src: ../templates/resolv.j2
+    dest: /etc/resolv.conf
+    mode: 0644
+    owner: root
+    group: root

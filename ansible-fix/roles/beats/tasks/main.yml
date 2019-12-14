@@ -1,0 +1,9 @@
+---
+- import_tasks: metricbeat-install.yml
+  tags:
+    - metricbeat_install
+
+# - import_tasks: filebeat-install.yml
+#   tags:
+#     - filebeat_install
+

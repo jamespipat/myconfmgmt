@@ -1,0 +1,10 @@
+---
+- hosts: '{{ hostnames }}'
+  vars:
+    node1: cluster1.test.co.th
+    node2: cluster2.test.co.th
+
+  roles: 
+    - cluster
+
+    

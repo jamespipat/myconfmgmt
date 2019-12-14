@@ -1,0 +1,52 @@
+---
+- name: Debian
+  block:
+    - name: Adding repository
+      template:
+        src: ../templates/elastic-debian.j2
+        dest: /etc/apt/sources.list.d/elastic.list
+        mode: 0664
+        owner: root
+        group: root
+      tags: add_repo    
+
+    - name: Importing PGP key 
+      raw: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+      args:
+        executable: /bin/bash
+      tags: pgpkey
+
+    - name: Install package requirement
+      apt:
+        name:
+          - apt-transport-https
+          - elasticsearch
+        update_cache: yes
+        state: latest
+      tags: req_deb
+  when: ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+
+- name: CentOS
+  block:
+    - name: Adding repository
+      template:
+        src: ../templates/elastic-centos.j2
+        dest: /etc/yum.repos.d/elastic.repo
+        mode: 0664
+        owner: root
+        group: root
+      tags: add_repo
+    
+    - name: Importing PGP key
+      rpm_key:
+        state: present
+        key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      tags: pgpkey
+    
+    - name: Install package requirement
+      yum:
+        name:
+          - elasticsearch
+        state: latest
+      tags: req_deb
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"

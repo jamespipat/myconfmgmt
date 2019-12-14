@@ -1,0 +1,29 @@
+---
+- name: Creating user ansible
+  user:
+    name: ansible
+    password: 'rk9TcbnB'
+    groups: 
+      - sudo
+    state: present
+    shell: /bin/bash       
+    system: no            
+    create_home: yes        
+
+- name: Adding pubkey
+  block:
+    - name: Create .ssh directory
+      file:
+        path: ~/.ssh
+        state: directory
+        mode: 0750
+        owner: ansible
+        group: ansible
+    - name: Adding pubkey
+      template:
+        src: ../templates/ansible_pubkey.j2
+        dest: ~/.ssh/authorized_keys
+        mode: 0600
+        owner: root
+        group: root
+  

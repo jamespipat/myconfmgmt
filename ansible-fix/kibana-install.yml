@@ -1,0 +1,5 @@
+---
+- hosts: '{{ hostnames }}'
+
+  roles: kibana
+

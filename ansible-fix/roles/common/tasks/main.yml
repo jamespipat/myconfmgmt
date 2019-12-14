@@ -1,0 +1,10 @@
+---
+- import_tasks: centos7-initial.yml
+  tags: centos7-initial
+
+- import_tasks: debian10-initial.yml
+  tags: debian10-initial
+
+- import_tasks: debian-interface.yml
+  tags: debian-interface
+

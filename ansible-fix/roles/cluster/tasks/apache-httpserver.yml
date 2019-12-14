@@ -1,0 +1,40 @@
+---
+- name: Install packages requirement
+  yum:
+    name:
+      - pcs
+      - pacemaker
+      - fence-agents-all
+      - yum-plugin-versionlock
+    state: latest
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Enable firewall
+  firewalld:
+    zone: public
+    service: high-availability
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Start service
+  systemd:
+    name: pcsd
+    state: started
+    enabled: yes
+
+- name: Change user password
+  user:
+    name: hacluster
+    password: "1q2w3e4r"
+
+
+- name: Authenticate user on node
+  expect:
+    command: pcs cluster auth {{ node1 }} {{ node2 }}
+    responses:
+      useranme: "hacluster"
+      password: "1q2w3e4r"
+  # you don't want to show passwords in your logs
+#  no_log: true

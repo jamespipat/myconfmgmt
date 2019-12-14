@@ -1,0 +1,13 @@
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug ens33
+iface ens33 inet static
+        address {{ address }}/24
+        gateway 192.168.84.2
+        dns-nameserver 192.168.84.253
+

@@ -1,0 +1,19 @@
+options {
+    forwarders {
+        1.1.1.1;
+        1.0.0.1;
+    };
+    recursion yes;
+    allow-recursion { local; };
+    allow-transfer { none; };
+    listen-on { 192.168.84.253; };
+#    allow-query { none; };
+#    dnssec-enable   yes;
+#    dnssec-validation   yes;
+};
+
+
+acl "local" {
+    192.168.84.0/24;
+    10.70.80.0/24;
+};
