@@ -1,4 +1,5 @@
 ---
 - hosts: '{{ hostnames }}'
 
-  roles: elastic
+  roles: 
+    - elastic

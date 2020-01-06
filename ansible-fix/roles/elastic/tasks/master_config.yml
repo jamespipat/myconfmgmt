@@ -1,0 +1,82 @@
+---
+# - name: install package requirement
+#   dnf:
+#     name:
+#       - bash-completion
+#       - wget
+#     state: latest
+
+# - name: creating ELK 7.5 repo 
+#   block:
+#     - name: ES repository
+#       template:
+#         src: ../templates/elastic-centos.j2
+#         dest: /etc/yum.repos.d/elastic.repo
+#         mode: 0664
+#         owner: root
+#         group: root
+#     - name: Kibana repository
+#       template:
+#         src: ../templates/kibana-centos.j2
+#         dest: /etc/yum.repos.d/kibana.repo
+#         mode: 0664
+#         owner: root
+#         group: root
+
+# - name: Importing PGP key
+#   rpm_key:
+#     state: present
+#     key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+# - name: Install elasticsearch, kibana, nginx
+#   dnf:
+#     name:
+#       - elasticsearch
+#       - kibana
+#       - nginx
+#     state: latest
+
+# - name: Create data directory
+#   file:
+#     path: /elastic/data
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: elasticsearch
+#     group: elasticsearch
+
+- name: Replace the content of elasticsearch.yml
+  copy:
+    src: ../templates/master-node.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    # backup: yes
+
+# - name: Edit Heap size
+#   replace:
+#     path: /etc/elasticsearch/jvm.options
+#     regexp: '1g'
+#     replace: '2g'
+
+# - name: Create certs directory
+#   file:
+#     path: /etc/elasticsearch/certs
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: root
+#     group: elasticsearch
+
+# - name: transfer cert to node
+#   copy:
+#     src: "{{ item }}"
+#     dest: /etc/elasticsearch/certs
+#     mode: 0600
+#     owner: elasticsearch
+#     group: elasticsearch
+#     follow: yes
+#   with_items:
+#     - ../templates/master.p12
+#     - ../templates/kibana.p12
+
+
+
+
+

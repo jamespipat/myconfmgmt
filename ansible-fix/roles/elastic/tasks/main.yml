@@ -1,5 +1,17 @@
 ---
 - import_tasks: elastic-install.yml
-  tags: 
-    - elastic_install
+  tags: elastic_install
+
+- import_tasks: aws-sandbox.yml
+  tags: aws
+
+- import_tasks: master_config.yml
+  tags: master
+
+- import_tasks: data1_config.yml
+  tags: data1
+
+- import_tasks: data2_config.yml
+  tags: data2
+
 

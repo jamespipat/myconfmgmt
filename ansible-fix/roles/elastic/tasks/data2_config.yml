@@ -1,0 +1,61 @@
+# ---
+# # - name: add repository
+# #   blockinfile:
+# #     path: /etc/apt/sources.list.d/elastic.list
+# #     insertafter: "EOF"
+# #     block: |
+# #       deb https://artifacts.elastic.co/packages/7.x/apt stable main
+# #     create: yes
+
+# - name: add repository
+#   shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic.list
+
+# - name: add repository
+#   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+# - name: Install elasticsearch
+#   apt:
+#     name:
+#       - apt-transport-https
+#       - elasticsearch
+#     update_cache: yes
+#     state: latest
+
+# - name: Create data directory
+#   file:
+#     path: /elastic/data
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: elasticsearch
+#     group: elasticsearch
+
+- name: Replace the content of elasticsearch.yml
+  copy:
+    src: ../templates/data2-node.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+#     backup: yes
+
+# - name: Edit Heap size
+#   replace:
+#     path: /etc/elasticsearch/jvm.options
+#     regexp: '1g'
+#     replace: '2g'
+
+# - name: Create certs directory
+#   file:
+#     path: /etc/elasticsearch/certs
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: root
+#     group: elasticsearch
+
+# - name: transfer cert to node
+#   copy:
+#     src: ../templates/data2.p12
+#     dest: /etc/elasticsearch/certs
+#     mode: 0600
+#     owner: elasticsearch
+#     group: elasticsearch
+#     follow: yes
+
+

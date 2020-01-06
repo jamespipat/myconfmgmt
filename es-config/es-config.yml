@@ -109,3 +109,10 @@ xpack.monitoring.elasticsearch.collection.enabled: false
 # what's next
 gen CA of ES with pem format to use with Kibana
 
+
+
+
+
+
+
+

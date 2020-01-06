@@ -1,0 +1,31 @@
+path:
+  logs: /var/log/elasticsearch
+  data: /elastic/data
+
+discovery.seed_hosts:
+  - 172.31.30.110
+  - 172.31.18.154
+  - 172.31.28.146
+
+network.host: [_local_, _site_]
+
+cluster.name: develop1
+cluster.initial_master_nodes:
+  - 172.31.30.110
+  - 172.31.18.154
+  - 172.31.28.146
+
+node.name: data2
+node.master: true 
+node.data: true 
+node.ingest: false 
+node.attr.zone: 3
+node.attr.temp: warm
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: none 
+xpack.security.transport.ssl.keystore.path: certs/data2.p12
+xpack.security.transport.ssl.truststore.path: certs/data2.p12
+
+xpack.security.audit.enabled: true 

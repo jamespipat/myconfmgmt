@@ -1,15 +1,5 @@
 ---
-- name: Install kibana
-  apt:
-    name:
-      - kibana
-    state: latest
-    update_cache: yes
-  when: ansible_distribution == "Debian" and ansible_distribution_release == "buster"
-
-- name: Install kibana
-  yum:
-    name:
-      - kibana
-    state: latest
-  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+- name: Replace the content of elasticsearch.yml
+  copy:
+    src: ../templates/withESnode-config.j2
+    dest: /etc/kibana/kibana.yml

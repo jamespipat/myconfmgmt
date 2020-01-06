@@ -1,0 +1,15 @@
+---
+- name: install package requirement
+  dnf:
+    name:
+      - bash-completion
+      - wget
+    state: latest
+
+- name: Changing history size
+  blockinfile:
+    path: /root/.bash_profile
+    insertafter: "EOF"
+    block: |
+      export HISTSIZE=
+      export HISTFILESIZE=
