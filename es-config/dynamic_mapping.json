@@ -1,0 +1,35 @@
+// PUT /my_index
+{
+    "mappings": {
+        "doc": {
+            "dynamic_templates": [
+                {
+                    "match_mapping_type": "string",
+                    "match": "*_name",
+                    "mapping": {
+                        "type": "keyword"
+                    }
+                }
+
+            ]
+        }
+    }
+}
+
+// POST _reindex
+
+{
+    "source": {
+        "index": "bank",
+        "query": {
+            "match": {
+                "gender.keyword": "F"
+            }
+        }
+    },
+    "dest": {
+        "index": "bank_new"
+    }
+}
+
+// POST /bank_new/_update_by_query
