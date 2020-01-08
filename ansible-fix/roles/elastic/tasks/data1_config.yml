@@ -1,23 +1,75 @@
 ---
-- name: creating ELK 7.5 repo 
-  block:
-    - name: ES repository
-      template:
-        src: ../templates/elastic-centos.j2
-        dest: /etc/yum.repos.d/elastic.repo
-        mode: 0664
-        owner: root
-        group: root
+# - name: creating ELK 7.5 repo 
+#   block:
+#     - name: ES repository
+#       template:
+#         src: ../templates/elastic-centos.j2
+#         dest: /etc/yum.repos.d/elastic.repo
+#         mode: 0664
+#         owner: root
+#         group: root
 
-- name: Importing PGP key
-  rpm_key:
-    state: present
-    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# - name: Importing PGP key
+#   rpm_key:
+#     state: present
+#     key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+# - name: Install elasticsearch
+#   dnf:
+#     name:
+#       - elasticsearch
+#     state: latest
+
+# - name: Create data directory
+#   file:
+#     path: /elastic/data
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: elasticsearch
+#     group: elasticsearch
+
+# - name: Replace the content of elasticsearch.yml
+#   copy:
+#     src: ../templates/data1-node.j2
+#     dest: /etc/elasticsearch/elasticsearch.yml
+#     backup: yes
+
+# # - name: Edit Heap size
+# #   replace:
+# #     path: /etc/elasticsearch/jvm.options
+# #     regexp: '1g'
+# #     replace: '2g'
+
+# - name: Create certs directory
+#   file:
+#     path: /etc/elasticsearch/certs
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: root
+#     group: elasticsearch
+
+# - name: transfer cert to node
+#   copy:
+#     src: ../templates/data1.p12
+#     dest: /etc/elasticsearch/certs
+#     mode: 0600
+#     owner: elasticsearch
+#     group: elasticsearch
+#     follow: yes
+
+
+- name: add repository
+  shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic.list
+
+- name: add repository
+  shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
 - name: Install elasticsearch
-  dnf:
+  apt:
     name:
+      - apt-transport-https
       - elasticsearch
+    update_cache: yes
     state: latest
 
 - name: Create data directory
@@ -33,12 +85,6 @@
     src: ../templates/data1-node.j2
     dest: /etc/elasticsearch/elasticsearch.yml
     backup: yes
-
-# - name: Edit Heap size
-#   replace:
-#     path: /etc/elasticsearch/jvm.options
-#     regexp: '1g'
-#     replace: '2g'
 
 - name: Create certs directory
   file:

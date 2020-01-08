@@ -10,13 +10,13 @@
     state: latest
 
 
-- name: Aliasing ls command
-  lineinfile:
-    path: /etc/profile
-    regexp: 'alias ls'
-    insertafter: 'EOF'
-    state: present
-    line: alias ls="ls --color=auto"
+# - name: Aliasing ls command
+#   lineinfile:
+#     path: /etc/profile
+#     regexp: 'alias ls'
+#     insertafter: 'EOF'
+#     state: present
+#     line: alias ls="ls --color=auto"
 
 
 - name: Changing history size

@@ -1,0 +1,56 @@
+---
+all:
+  children:
+    monitor:
+      hosts:
+        192.168.84.134:
+        192.168.84.135:
+    cluster:
+      hosts:
+        192.168.84.137:
+        192.168.84.138:
+    develop:
+      hosts:
+        192.168.84.128:
+        192.168.84.129:
+        192.168.84.133:
+    dns:
+      hosts:
+        192.168.84.253:
+    mail:
+      hosts:
+        192.168.84.223:
+    ldap:
+      hosts:
+        192.168.84.252:
+    proxy:
+      hosts:
+        192.168.84.136:
+    webserver:
+      hosts:
+        192.168.84.137: 
+    # redhat:
+    #   hosts:
+    #     yegojidmal11c.mylabserver.com:
+    #     yegojidmal12c.mylabserver.com:
+    debian:
+      hosts:
+        yegojidmal13c.mylabserver.com:
+        yegojidmal11c.mylabserver.com:
+        yegojidmal12c.mylabserver.com:
+    data:
+      hosts:
+        yegojidmal12c.mylabserver.com:
+        yegojidmal13c.mylabserver.com:
+    master:
+      hosts:
+        yegojidmal11c.mylabserver.com:
+    data1:
+      hosts:
+        yegojidmal12c.mylabserver.com:
+    data2:
+      hosts:
+        yegojidmal13c.mylabserver.com:
+
+
+

@@ -3,17 +3,17 @@ path:
   data: /elastic/data
 
 discovery.seed_hosts:
-  - 172.31.30.110
-  - 172.31.18.154
-  - 172.31.28.146
+  - 172.31.24.42
+  - 172.31.27.10
+  - 172.31.27.54
 
 network.host: [_local_, _site_]
 
 cluster.name: develop1
 cluster.initial_master_nodes:
-  - 172.31.30.110
-  - 172.31.18.154
-  - 172.31.28.146
+  - 172.31.24.42
+  - 172.31.27.10
+  - 172.31.27.54
 
 node.name: master
 node.master: true 
@@ -27,9 +27,9 @@ xpack.security.transport.ssl.verification_mode: none
 xpack.security.transport.ssl.keystore.path: certs/master.p12
 xpack.security.transport.ssl.truststore.path: certs/master.p12
 
-xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.keystore.path: certs/kibana.p12
-xpack.security.http.ssl.truststore.path: certs/kibana.p12
+#xpack.security.http.ssl.enabled: true
+#xpack.security.http.ssl.keystore.path: certs/kibana.p12
+#xpack.security.http.ssl.truststore.path: certs/kibana.p12
 
 xpack.security.audit.enabled: true 
 
