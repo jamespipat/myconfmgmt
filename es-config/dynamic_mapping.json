@@ -33,3 +33,23 @@
 }
 
 // POST /bank_new/_update_by_query
+{
+    "script": {
+        "lang": "painless",
+        "source": """
+            ctx._source.balance += ctx._source.balance * 0.03;
+            if (ctx._source.transactions == null) {
+                ctx._source.transactions = 1;
+            } else {
+                ctx._source.transactions++
+            }
+        """
+    },
+    "query": {
+        "match": {
+            "gerder.keyword": "F"
+        }
+    }
+}
+
+// 172.31.24.58
