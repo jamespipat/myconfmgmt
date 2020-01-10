@@ -1,0 +1,401 @@
+GET /_cat/nodes?v
+GET /_cat/indices?v
+GET /_cat/health?v
+
+GET /bank/account/0
+
+DELETE /bank
+PUT /bank
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  }
+}
+
+PUT /shakespeare
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "speaker": {
+        "type": "keyword"
+      },
+      "play_name": {
+        "type": "keyword"
+      },
+      "line_id": {
+        "type": "integer"
+      },
+      "speech_number": {
+        "type": "integer"
+      }
+    }
+  }
+}
+
+GET /index-1/_doc/1
+
+PUT /index-1/_doc/1
+{
+  "Firstname": "Myles",
+  "Lastname": "Young"
+}
+
+POST /index-1/_update/1
+{
+    "script" : {
+        "source": "ctx._source.Firstname.add(params.name)",
+        "lang": "painless",
+        "params" : {
+            "name" : "Micah"
+        }
+    }
+}
+
+PUT /shakespeare
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "speaker": {
+        "type": "keyword"
+      },
+      "play_name": {
+        "type": "keyword"
+      },
+      "line_id": {
+        "type": "integer"
+      },
+      "speech_number": {
+        "type": "integer"
+      }
+    }
+  }
+}
+
+PUT /shakespeare/_alias/Henry
+{
+  "filter": {
+    "term": {
+      "play_name": "Henry IV"
+    }
+  }
+}
+
+PUT _template/template_1
+{
+  "index_patterns": "log-*",
+  "aliases": {
+    "gen_log": {},
+    "my_log": {
+      "filter": {
+        "term": {
+          "FIELD": "VALUE"
+        }
+      }
+    }
+  },
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "host_name": {
+        "type": "keyword"
+      },
+      "created_at": {
+        "type": "date",
+        "format": "EEE MMM dd HH:mm:ss Z yyyy"
+      }
+    }
+  }
+}
+
+PUT /logs_20302801
+{
+  "mappings": {
+    "properties": {
+      "year": {
+        "type": "integer"
+      }
+    }
+  },
+  "aliases": {
+    "2030": {
+      "filter": {
+        "term": {
+          "year": 2030
+        }
+      }
+    },
+    "current_day": {}
+  }
+}
+
+PUT /index-4
+{
+  "aliases": {
+    "index": {},
+    "index2": {
+        "filter": {
+            "term": {
+                "some_field": "value"
+            }
+        }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "firstname": {
+        "type": "keyword"
+      },
+      "lastname": {
+        "type": "keyword"
+      },
+      "summary": {
+        "type": "text"
+      },
+      "age": {
+        "type": "short"
+      },
+      "is_subscribed": {
+        "type": "boolean"
+      },
+      "geo": {
+        "type": "geo_point"
+      },
+      "last_modified": {
+        "type": "date"
+      },
+      "percent_complete": {
+        "type": "scaled_float",
+        "scaling_factor": 100
+      }
+    }
+  },
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  }
+}
+
+POST _analyze
+{
+  "analyzer": "standard",
+  "text": "The 3 QUICK Browned-Foxes jumped over the neighbor's fence."
+}
+
+POST _analyze
+{
+  "analyzer": "simple",
+  "text": "The 3 QUICK Browned-Foxes jumped over the neighbor's fence."
+}
+
+POST _analyze
+{
+  "analyzer": "english",
+  "text": "The 3 QUICK Browned-Foxes jumped over the neighbor's fence."
+}
+
+PUT /index-5
+{
+  "mappings": {
+    "properties": {
+      "text": {
+        "type": "text",
+        "fields": {
+          "simple": {
+            "type": "text",
+            "analyzer": "simple"
+          },
+          "whitespace": {
+            "type": "text",
+            "analyzer": "whitespace"
+          },
+          "english": {
+            "type": "text",
+            "analyzer": "english"
+          }
+        }
+      }
+    }
+  }
+}
+
+PUT /index-5/_doc/1
+{
+  "text": "The 3 QUICK Browned-Foxes jumped over the neighbor's fence."
+}
+
+GET /index-5/_search
+{
+  "query": {
+    "match": {
+      "text.english": "fox"
+    }
+  }
+}
+
+PUT index-6
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "whitespace_lowercase": {
+          "tokenizer": "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "text": {
+        "type": "text",
+        "analyzer": "whitespace_lowercase"
+      }
+    }
+  }
+}
+
+PUT index-6/_doc/1
+{
+  "text": "The 3 QUICK Browned-Foxes jumped over the neighbor's fence."
+}
+
+GET index-6/_search
+{
+  "query": {
+    "match": {
+      "text": "quick"
+    }
+  }
+}
+
+PUT index-7
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_analyzer": {
+          "type": "custom",
+          "char_filter": [
+            "emoji"
+          ],
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "english_stop"
+          ]
+        }
+      },
+      "char_filter": {
+        "emoji": {
+          "type": "mapping",
+          "mapping": [
+            ":) => :happy:",
+            ":( => :sad:"
+          ]
+        }
+      },
+      "filter": {
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "text": {
+        "type": "text",
+        "analyzer": "my_analyzer"
+      }
+    }
+  }
+}
+
+PUT index-8
+{
+  "mappings": {
+    "properties": {
+      "field-1": {
+        "type": "text",
+        "fields": {
+          "simple": {
+            "type": "text",
+            "analyzer": "simple"
+          },
+          "english": {
+            "type": "text",
+            "analyzer": "english"
+          },
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      }
+    }
+  }
+}
+
+PUT index-9/_doc/1
+{
+  "geo": {
+    "ip": "10.0.0.1",
+    "coordinates": {
+      "lat": "some_number",
+      "long": "some_number"
+    },
+    "country": "United States",
+    "state": "Virginia",
+    "city": "Richmond"
+  }
+}
+
+GET index-10
+DELETE index-10
+
+PUT index-10
+{
+  "mappings": {
+    "properties": {
+      "group": {
+        "type": "keyword"
+      },
+      "user": {
+        "type": "nested"
+      }
+    }
+  }
+}
+
+PUT index-10/_doc/1
+{
+  "group": "LA students",
+  "user": [
+    {
+      "first": "Myles",
+      "last": "Young",
+      "username": "myles.young@la.com"
+    },
+    {
+      "first": "Terry",
+      "last": "Cox",
+      "username": "terry.cox@la.com"
+    }
+  ]
+}
+
+
+
