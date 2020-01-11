@@ -1,0 +1,19 @@
+path:
+  logs: /var/log/elasticsearch
+  data: /elastic/data
+
+discovery.seed_hosts:
+  - 172.31.19.110
+
+
+network.host: [_local_, _site_]
+
+cluster.name: develop2
+cluster.initial_master_nodes:
+  - 172.31.19.110
+
+
+node.name: another
+node.master: true 
+node.data: true 
+node.ingest: false 

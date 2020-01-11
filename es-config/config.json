@@ -397,5 +397,78 @@ PUT index-10/_doc/1
   ]
 }
 
+// snapshot and backup
+GET _cat/indices?v
 
+PUT _snapshot/my_repo
+{
+  "type": "fs",
+  "settings": {
+    "location": "/data/snapshot"
+  }
+}
 
+PUT /snaptest_index
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  }
+}
+
+PUT _snapshot/my_repo/shakespeare_1?wait_for_completion
+{
+  "indices": "shakespeare",
+  "include_global_state": false
+}
+
+GET _snapshot/my_repo/shakespeare_1
+
+POST _snapshot/my_repo/shakespeare_1?wait_for_completion
+{
+  "indices": "shakespeare",
+  "rename_patern": "(.+)",
+  "rename_replacement": "$1_testing"
+}
+
+// hot/warm architecture
+PUT hot
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "hot"
+  }
+}
+
+PUT warm
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "warm"
+  }
+}
+
+GET _cat/shards/warm?v
+
+// diagnose shard issues and repair cluster's health
+GET _cat/allocation/index_name
+GET _cat/shards/index_name
+
+PUT index_name
+{
+  "settings": {
+    "number_of_replicas": 1,
+    "number_of_shards": 0,
+    "index.routing.allocation.exclude._name": "data1,data2"
+  }
+}
+
+GET _cluster/allocation/explain
+{
+  "index": "index_name",
+  "shard": shard_number,
+  "primary": true
+}
+
+PUT index_name/_settings
+{
+  "index.routing.allocation.require._name": "data1"
+}
