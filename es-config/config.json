@@ -472,3 +472,390 @@ PUT index_name/_settings
 {
   "index.routing.allocation.require._name": "data1"
 }
+
+// Term query
+
+GET shakespeare/_search
+{
+  "query": {
+    "term": {
+      "play_name": {
+        "value": "Othello"
+      }
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "query": {
+    "terms": {
+      "play_name": [
+        "Othello",
+        "Romeo and Juliet"
+      ]
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "query": {
+    "range": {
+      "speech_number": {
+        "gte": 10,
+        "lte": 35
+      }
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "query": {
+    "range": {
+      "date": {
+        "gte": "01/01/2000",
+        "lte": "01/12/2000",
+        "format": "dd/MM/yyyy||yyyy"
+      }
+    }
+  }
+}
+
+// Full-text query
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": "where art thou"
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "query": {
+    "match_phrase": {
+      "text_entry": "where art thou"
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "some_query",
+      "fields": ["field1", "field2"]
+    }
+  }
+}
+
+// Boolean search
+GET bank/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": {
+              "value": "F",
+              "_name": "gender"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "state.keyword": {
+              "value": "RI",
+              "_name": "state"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "lastname.keyword": {
+              "value": "Meyers",
+              "_name": "lastname_1"
+            }
+          }
+        },
+        {
+          "term": {
+            "lastname": {
+              "value": "Owens",
+              "_name": "lastname_2"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1,
+      "filter": {
+        "term": {
+          "city.keyword": "Jacksonburg"
+        }
+      }
+    }
+  }
+}
+
+// sort result of the query
+GET bank/_search
+{
+  "query": {
+    "term": {
+      "state.keyword": {
+        "value": "VA"
+      }
+    }
+  },
+  "sort": [
+    {
+      "age": {
+        "order": "desc"
+      }
+    },
+    {
+      "balance": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+// pagination of the query's result
+GET shakespeare/_search?size=20&from=0
+{
+  "query": {
+    "term": {
+      "play_name": {
+        "value": "Antony and Cleopatra"
+      }
+    }
+  }
+}
+
+// scroll API
+GET shakespeare/_search?scroll?scroll=10m
+{
+  "slice": {
+    "id": 0,
+    "max": 10
+  },
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET shakespeare/_search?scroll?scroll=10m
+{
+  "slice": {
+    "id": 1,
+    "max": 10
+  },
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET shakespeare/_search?scroll=10m
+{
+  "size": 10000
+}
+
+GET /_search/scroll
+{
+  "scroll": "10m",
+  "scroll_id": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAAABy4FkJKMmg0R0JDU3dTRW85TlZKaDRpcHcAAAAAAAAcuRZCSjJoNEdCQ1N3U0VvOU5WSmg0aXB3"
+}
+
+DELETE _search/scroll/_all
+
+// fuzziness
+GET shakespeare/_search
+{
+  "query": {
+    "fuzzy": {
+      "text_entry": {
+        "value": "saken",
+        "fuzziness": 1,
+        "prefix_length": 1,
+        "max_expansions": 50,
+        "transpositions": true
+      }
+    }
+  }
+}
+
+// Bucket Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "request_per_day": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "year"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "response_codes": {
+      "terms": {
+        "field": "response.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+// Metric Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "average_byte" {
+      "avg": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "sum_of_bytes": {
+      "sum": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "unique_clients": {
+      "cardinality": {
+        "field": "clientip.keyword"
+      }
+    }
+  }
+}
+
+// Nested Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "clients_per_day": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "day"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "extension": {
+      "terms": {
+        "field": "extension.keyword",
+        "size": 10,
+        "order": {
+          "average_bytes": "desc"
+        }
+      },
+      "aggs": {
+        "average_bytes": {
+          "avg": {
+            "field": "bytes"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Pipeline aggreagation
+// parent
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "bytes_per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      },
+      "aggs": {
+        "sum_of_bytes": {
+          "sum": {
+            "field": "bytes"
+          }
+        },
+        "cumulative_bytes": {
+          "cumulative_sum": {
+            "buckets_path": "sum_of_bytes"
+          }
+        },
+        "bytes_per_second": {
+          "derivative": {
+            "buckets_path": "cumulative_bytes",
+            "unit": "second"
+          }
+        }
+      }
+    }
+  }
+}
+
+// siblings
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "client_per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    },
+    "max": {
+      "max_bucket": {
+        "buckets_path": "client_per_hour>unique_clients"
+      }
+    }
+  }
+}

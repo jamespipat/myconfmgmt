@@ -1,3 +1,5 @@
+//dynamic mapping
+
 // PUT /my_index
 {
     "mappings": {
@@ -15,6 +17,8 @@
         }
     }
 }
+
+// reindex
 
 // POST _reindex
 
