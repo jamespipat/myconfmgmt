@@ -448,6 +448,16 @@ PUT warm
 
 GET _cat/shards/warm?v
 
+// Shard Allocation Awareness and Forced Awareness for an index
+
+GET _cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.awareness.attributes": "zone",
+    "cluster.routing.allocation.awareness.force.zone.value": "1,2,3"
+  }
+}
+
 // diagnose shard issues and repair cluster's health
 GET _cat/allocation/index_name
 GET _cat/shards/index_name
