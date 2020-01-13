@@ -1,17 +1,22 @@
 ---
-- import_tasks: elastic-install.yml
+- name: elastic installer
+  include: elastic-install.yml
   tags: elastic_install
 
-- import_tasks: aws-sandbox.yml
-  tags: aws
-
-- import_tasks: master_config.yml
+- name: master node installer
+  include: master_config.yml
   tags: master
 
-- import_tasks: data1_config.yml
+- name: data1 node installer
+  include: data1_config.yml
   tags: data1
 
-- import_tasks: data2_config.yml
+- name: data2 node installer
+  include: data2_config.yml
   tags: data2
+
+
+  
+
 
 

@@ -77,54 +77,54 @@
 #     - ../templates/kibana.p12
 
 
-- name: add repository
-  shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic.list
+# - name: add repository
+#   shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic.list
 
-- name: add repository
-  shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+# - name: add repository
+#   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
-- name: Install elasticsearch
-  apt:
-    name:
-      - apt-transport-https
-      - elasticsearch
-      - kibana
-    update_cache: yes
-    state: latest
+# - name: Install elasticsearch
+#   apt:
+#     name:
+#       - apt-transport-https
+#       - elasticsearch
+#       - kibana
+#     update_cache: yes
+#     state: latest
 
-- name: Create data directory
-  file:
-    path: /elastic/data
-    state: directory
-    mode: u=rwx,g=rxs,o=rx
-    owner: elasticsearch
-    group: elasticsearch
+# - name: Create data directory
+#   file:
+#     path: /elastic/data
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: elasticsearch
+#     group: elasticsearch
 
-- name: Replace the content of elasticsearch.yml
-  copy:
-    src: ../templates/master-node.j2
-    dest: /etc/elasticsearch/elasticsearch.yml
-    backup: yes
+# - name: Replace the content of elasticsearch.yml
+#   copy:
+#     src: ../templates/master-node.j2
+#     dest: /etc/elasticsearch/elasticsearch.yml
+#     backup: yes
 
-- name: Create certs directory
-  file:
-    path: /etc/elasticsearch/certs
-    state: directory
-    mode: u=rwx,g=rxs,o=rx
-    owner: root
-    group: elasticsearch
+# - name: Create certs directory
+#   file:
+#     path: /etc/elasticsearch/certs
+#     state: directory
+#     mode: u=rwx,g=rxs,o=rx
+#     owner: root
+#     group: elasticsearch
 
-- name: transfer cert to node
-  copy:
-    src: "{{ item }}"
-    dest: /etc/elasticsearch/certs
-    mode: 0600
-    owner: elasticsearch
-    group: elasticsearch
-    follow: yes
-  with_items:
-    - ../templates/master.p12
-    - ../templates/kibana.p12
+# - name: transfer cert to node
+#   copy:
+#     src: "{{ item }}"
+#     dest: /etc/elasticsearch/certs
+#     mode: 0600
+#     owner: elasticsearch
+#     group: elasticsearch
+#     follow: yes
+#   with_items:
+#     - ../templates/master.p12
+#     - ../templates/kibana.p12
 
 
 

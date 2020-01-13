@@ -1,0 +1,9 @@
+You work as an Elasticsearch administrator of a cluster used for log aggregation. In an effort to increase your data retention, you recently added a second data node to your cluster and want to establish a hot-warm architecture to facilitate the purchasing of more cheap nodes to be used as warm nodes. 
+You are storing your log data in weekly indexes with the naming scheme of logs-\<week\_number\> and only want the current week's index to be allocated to the hot node. The rest of the indexes should be allocated to your warm node.
+
+First, you will need to add the temp attribute to your data nodes with a value of hot on data-1 and a value of warm on data-2. Next, you will need to update the index settings for each index to allocate to the desired node. Only the most recent week's index should be allocated to the hot node (data-1).
+
+Your 3-node Elasticsearch cluster is already up and running on the master node, along with a Kibana instance. You can perform the instructions above with either Kibana's console tool or curl on the command line. If you want to use Kibana's console tool for this activity, you will need to perform Task 1. Otherwise, skip Task 1 and continue to Task 2.
+
+
+logs-\<week\_number\> index
