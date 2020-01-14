@@ -533,6 +533,8 @@ GET shakespeare/_search
   }
 }
 
+
+
 // Full-text query
 GET shakespeare/_search
 {
@@ -611,6 +613,50 @@ GET bank/_search
           "city.keyword": "Jacksonburg"
         }
       }
+    }
+  }
+}
+
+GET shakespeare/_search?size=5
+{
+  "from": 0,
+  "size": 5,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "text_entry": "death"
+          }
+        }
+      ]
+    },
+    "filter": {
+      "term": {
+        "play_name": {
+          "value": "Hamlet",
+          "_name": "play_name"
+        }
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    },
+    {
+      "line_id": {
+        "order": "asc"
+      }
+    }
+  ],
+  "highlight": {
+    "pre_tags": ["<strong>"],
+    "post_tags": ["</strong>"],
+    "fields": {
+      "text_entry": {}
     }
   }
 }
@@ -869,3 +915,4 @@ GET logs/_search
     }
   }
 }
+
