@@ -1,10 +1,212 @@
-the word "Death" or "death" is in the text_entry field
-A filter reduces the data set being search to the play "Hamlet"
-The results are first sorted by their relevancy score in descending 
-order and then by the line_id in ascending order
-The search supports pagination and returns the first 5 documents
-The search results highlight the matched term with <strong>search_term</strong>
-Once the team has learned this search, they will be able to abstract out the various 
-components and work it into their application to support user customization. 
-The team has requested that you save the resulting output of the search to the file 
-/home/elastic/results.json on the master node.
+1.
+How many unique employers are there among our account holders?
+How many accounts do we have in each state (listed in descending order by the number of accounts)?
+How many male and female account holders do we have in each state (listed in descending order by the number of accounts)?
+What is the average balance for each state (listed in descending order by the number of accounts), and what state has the maximum average balance?
+What is the total balance of the top 5 states whose account holders are at least age 30 (listed in descending order by the total balance)?
+
+
+2.
+You work as a system administrator for a company that wants to use Elasticsearch with Kibana to store and analyze some log data. You are being asked to prepare the Elasticsearch cluster for the log data by creating some indexes. Logs are considered time-series data, and we typically care most about the most recent logs. We need to make sure the data we care most about is allocated to our fastest, or "hot," nodes. The data we care less about can be allocated to slower "warm" nodes, which won't be indexed or searched as often. We also need to be able to search the data using aliases such as "this_week", "yesterday", or "today". Aliases make it easy to search the data you care about because you don't have to know specific index names.
+
+You have a pre-configured, 6-node Elasticsearch cluster with Kibana already set up and running on the coordinator-1 node. You will need to use Kibana's console tool to interact with Elasticsearch's APIs to create the following indexes:
+
+-----------------+-----------+-----------+----------+------------
+ Name            | Aliases   | Primaries | Replicas | Allocation 
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-05 | logs      | 2         | 1        | warm       
+                 | this_week |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-06 | logs      | 2         | 1        | warm       
+                 | this_week |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-07 | logs      | 2         | 1        | warm       
+                 | this_week |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-08 | logs      | 2         | 1        | warm       
+                 | this_week |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-09 | logs      | 2         | 1        | warm       
+                 | this_week |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-10 | logs      | 2         | 1        | hot        
+                 | this_week |           |          |            
+                 | yesterday |           |          |            
+-----------------+-----------+-----------+----------+------------
+ logs-2020-01-11 | logs      | 2         | 1        | hot        
+                 | this_week |           |          |            
+                 | today     |           |          |            
+-----------------+-----------+-----------+----------+------------
+
+3.
+You work as an Elasticsearch administrator for a data analytics company that wants to use your existing 6-node Elasticsearch cluster to analyze a few data sets. To facilitate the indexing of each data set, you need to configure the necessary index templates so that the data is stored in Elasticsearch with the correct mappings. Each template must have 4 primary shards and 3 replica shards for maximum replication across the 4 data nodes. The required templates mappings are described below:
+
+----------+---------------+-----------+---------------------+------------------------
+Name      | Index Pattern | Aliases   | Explicit Mapping    | Dynamic Mapping       
+----------+---------------+-----------+---------------------+------------------------
+customers | customers-*   | customers | field: year_to_date | name: long_to_integer 
+          |               |           | type: double        | match mapping: long    
+          |               |           |                     | mapping: integers      
+----------+---------------+-----------+---------------------+------------------------
+partners  | partners-*    | partners  | field: address      | name: string_to_keyword
+          |               |           | type: text          | match mapping: string 
+          |               |           |                     | mapping: keyword       
+----------+---------------+-----------+---------------------+------------------------
+leads     | leads-*       | leads     | field: address      | name: string_to_keyword
+          |               |           | type: text          | match mapping: string 
+          |               |           |                     | match: lead_*          
+          |               |           | field: estimate     | unmatch: *_text        
+          |               |           | type: double        | mapping: keyword       
+----------+---------------+-----------+---------------------+------------------------
+
+4.
+You work as an Elasticsearch administrator for a banking company. A recent failed deployment and subsequent rollback of your banking software has desynchronized some actions that were taken against a few accounts. To quickly rectify the desynchronization, you are being asked to perform manual CRUD operations to the bank index in Elasticsearch.
+
+An account needs to be added with the following customer data:
+
+Account Number: 1000
+Balance: $65,536
+Firstname: John
+Lastname: Doe
+Age: 23
+Gender: Male
+Address: 125 Bear Creek Pkwy
+Employer: Linux Academy
+Email: john@linuxacademy.com
+City: Keller
+State: TX
+Account 100 has changed addresses and needs the following fields updated:
+
+Address: 1600 Pennsylvania Ave NW
+City: Washington
+State: DC
+Accounts 1 and 10 have been closed by their previous owners and need to be deleted.
+
+5.
+You work as a research librarian who is currently studying the works of Shakespeare; specifically, Romeo and Juliet. You have a 6-node Elasticsearch cluster and the complete works of Shakespeare, which you use for your literary analysis. Currently, the complete works of Shakespeare are indexed to a single index called shakespeare, but, since you are currently focused on the play Romeo and Juliet, you would prefer to copy this play to its own index.
+
+To accomplish this, you will first need to create a new index called romeo_and_juliet with the same field mappings as the shakespeare index. Since your 3-node Elasticsearch cluster only has 4 data nodes, you want to create the romeo_and_juliet index with 4 primary shards and 3 replica shards for maximum replication. Once the romeo_and_juliet index has been created, you will need to use the _reindex API to copy all documents with play_name of "Romeo and Juliet" to the romeo_and_juliet index.
+
+In addition to copying the data for the play Romeo and Juliet to its own index, you also want to modify the data in-flight during the reindexing process. Specifically, you want to take the contents of the field text_entry and store each whitespace-delimited word in an array called word_array. Additionally, you want to add a word_count field that is equal to the number of words in the word_array field. Lastly, because the index will only contain data for the play Romeo and Juliet, we can remove the play_name field. All of this can be accomplished with an ingest node pipeline using the split, script, and remove processors.
+
+6.
+You work as an Elasticsearch administrator for a 6-node cluster and you are tasked with fixing some field mappings for an index containing log data. The current log data was ingested without any preparation so most of the fields created are not the desired type. The existing logs index will need to be reindexed into a new index called logs_new. You are being tasked to create the logs_new index with the following mapping requirements:
+
+--------------------------------------+-----------+-----------+-----------
+Field                                 | Datatype  | Character | Analyzer  
+                                      |           | Limit     |           
+--------------------------------------+-----------+-----------+-----------
+@message                              | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+@tags                                 | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+@timestamp                            | date      |           |           
+--------------------------------------+-----------+-----------+-----------
+@version                              | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+agent                                 | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+agent.keyword                         | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+bytes                                 | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+clientip                              | ip        |           |           
+--------------------------------------+-----------+-----------+-----------
+extension                             | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+geo.coordinates                       | geo_point |           |           
+--------------------------------------+-----------+-----------+-----------
+geo.dest                              | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+geo.src                               | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+geo.srcdest                           | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+headings                              | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+host                                  | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+ip                                    | ip        |           |           
+--------------------------------------+-----------+-----------+-----------
+links                                 | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+machine.os                            | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+machine.ram                           | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+memory                                | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+phpmemory                             | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+referer                               | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.article:modified_time  | date      |           |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.article:published_time | date      |           |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.article:section        | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.article:tag            | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:description         | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:image               | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:image:height        | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:image:width         | long      |           |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:site_name           | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:title               | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:title.keyword       | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:type                | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:url                 | text      |           | simple    
+--------------------------------------+-----------+-----------+-----------
+relatedContent.og:url.keyword         | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:card           | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:description    | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:image          | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:site           | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:title          | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+relatedContent.twitter:title.keyword  | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+relatedContent.url                    | text      |           | simple    
+--------------------------------------+-----------+-----------+-----------
+relatedContent.url.keyword            | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+request                               | text      |           | simple    
+--------------------------------------+-----------+-----------+-----------
+request.keyword                       | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+response                              | keyword   | 128       |           
+--------------------------------------+-----------+-----------+-----------
+spaces                                | text      |           | whitespace
+--------------------------------------+-----------+-----------+-----------
+url                                   | text      |           | simple    
+--------------------------------------+-----------+-----------+-----------
+url.keyword                           | keyword   | 256       |           
+--------------------------------------+-----------+-----------+-----------
+utc_time                              | date      |           |           
+--------------------------------------+-----------+-----------+-----------
+xss                                   | text      |           | standard  
+--------------------------------------+-----------+-----------+-----------
+xss.keyword                           | keyword   | 512       |           
+--------------------------------------+-----------+-----------+-----------
+
+The logs_new index should retain the same index settings as the logs index for the number of primary and replica shards. Once the logs_new index has been created, you can reindex the documents into the new index.
+
+
+7.
+You work as an Elasticsearch administrator who manages a 6-node Elasticsearch cluster that is being used for literary research. The research librarians who are currently using your cluster, to study the works of Shakespeare, have requested the addition of a new search behavior. Currently, the multi-field text_entry is indexed as both a non-analyzed keyword field and an analyzed text field using the standard analyzer. They are requesting the addition of another text_entry field called text_entry.case_insensitive that is also an analyzed text field, but analyzed with a custom analyzer called standard_custom that behaves exactly as the standard analyzer but does not lowercase the resulting words. For example, the line "Death, death; O amiable lovely death!" is analyzed by the standard analyzer as [death, death, o, amiable, lovely, death] but should be analyzed by the custom analyzer as [Death, death, O, amiable, lovely, death].
+
+The new field mapping and custom analyzer should be created on a new index called shakespeare_new which should otherwise look exactly like the shakespeare index. Once the index has been created with the requirements explained above, you will need to reindex the documents from the shakespeare index into the shakespeare_new index.
