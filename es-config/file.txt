@@ -7,7 +7,11 @@ What is the total balance of the top 5 states whose account holders are at least
 
 
 2.
-You work as a system administrator for a company that wants to use Elasticsearch with Kibana to store and analyze some log data. You are being asked to prepare the Elasticsearch cluster for the log data by creating some indexes. Logs are considered time-series data, and we typically care most about the most recent logs. We need to make sure the data we care most about is allocated to our fastest, or "hot," nodes. The data we care less about can be allocated to slower "warm" nodes, which won't be indexed or searched as often. We also need to be able to search the data using aliases such as "this_week", "yesterday", or "today". Aliases make it easy to search the data you care about because you don't have to know specific index names.
+You work as a system administrator for a company that wants to use Elasticsearch with Kibana to store and analyze some log data. 
+You are being asked to prepare the Elasticsearch cluster for the log data by creating some indexes. Logs are considered time-series data, 
+and we typically care most about the most recent logs. We need to make sure the data we care most about is allocated to our fastest, or "hot," nodes. 
+The data we care less about can be allocated to slower "warm" nodes, which won't be indexed or searched as often. 
+We also need to be able to search the data using aliases such as "this_week", "yesterday", or "today". Aliases make it easy to search the data you care about because you don't have to know specific index names.
 
 You have a pre-configured, 6-node Elasticsearch cluster with Kibana already set up and running on the coordinator-1 node. You will need to use Kibana's console tool to interact with Elasticsearch's APIs to create the following indexes:
 
@@ -39,7 +43,9 @@ You have a pre-configured, 6-node Elasticsearch cluster with Kibana already set 
 -----------------+-----------+-----------+----------+------------
 
 3.
-You work as an Elasticsearch administrator for a data analytics company that wants to use your existing 6-node Elasticsearch cluster to analyze a few data sets. To facilitate the indexing of each data set, you need to configure the necessary index templates so that the data is stored in Elasticsearch with the correct mappings. Each template must have 4 primary shards and 3 replica shards for maximum replication across the 4 data nodes. The required templates mappings are described below:
+You work as an Elasticsearch administrator for a data analytics company that wants to use your existing 6-node Elasticsearch cluster to analyze a few data sets. To facilitate the indexing of each data set, 
+you need to configure the necessary index templates so that the data is stored in Elasticsearch with the correct mappings. Each template must have 4 primary shards and 3 replica shards for maximum replication across the 4 data nodes.
+The required templates mappings are described below:
 
 ----------+---------------+-----------+---------------------+------------------------
 Name      | Index Pattern | Aliases   | Explicit Mapping    | Dynamic Mapping       
@@ -60,7 +66,8 @@ leads     | leads-*       | leads     | field: address      | name: string_to_ke
 ----------+---------------+-----------+---------------------+------------------------
 
 4.
-You work as an Elasticsearch administrator for a banking company. A recent failed deployment and subsequent rollback of your banking software has desynchronized some actions that were taken against a few accounts. To quickly rectify the desynchronization, you are being asked to perform manual CRUD operations to the bank index in Elasticsearch.
+You work as an Elasticsearch administrator for a banking company. A recent failed deployment and subsequent rollback of your banking software has desynchronized some actions that were taken against a few accounts. 
+To quickly rectify the desynchronization, you are being asked to perform manual CRUD operations to the bank index in Elasticsearch.
 
 An account needs to be added with the following customer data:
 
@@ -207,6 +214,32 @@ The logs_new index should retain the same index settings as the logs index for t
 
 
 7.
-You work as an Elasticsearch administrator who manages a 6-node Elasticsearch cluster that is being used for literary research. The research librarians who are currently using your cluster, to study the works of Shakespeare, have requested the addition of a new search behavior. Currently, the multi-field text_entry is indexed as both a non-analyzed keyword field and an analyzed text field using the standard analyzer. They are requesting the addition of another text_entry field called text_entry.case_insensitive that is also an analyzed text field, but analyzed with a custom analyzer called standard_custom that behaves exactly as the standard analyzer but does not lowercase the resulting words. For example, the line "Death, death; O amiable lovely death!" is analyzed by the standard analyzer as [death, death, o, amiable, lovely, death] but should be analyzed by the custom analyzer as [Death, death, O, amiable, lovely, death].
+You work as an Elasticsearch administrator who manages a 6-node Elasticsearch cluster that is being used for literary research. The research librarians who are currently using your cluster, 
+to study the works of Shakespeare, have requested the addition of a new search behavior. Currently, the multi-field text_entry is indexed as both a non-analyzed keyword field and an analyzed text field using the standard analyzer. 
+They are requesting the addition of another text_entry field called text_entry.case_insensitive that is also an analyzed text field, but analyzed with a custom analyzer called standard_custom that behaves exactly as the standard analyzer but does not lowercase the resulting words. 
+For example, the line "Death, death; O amiable lovely death!" is analyzed by the standard analyzer as [death, death, o, amiable, lovely, death] but should be analyzed by the custom analyzer as [Death, death, O, amiable, lovely, death].
 
 The new field mapping and custom analyzer should be created on a new index called shakespeare_new which should otherwise look exactly like the shakespeare index. Once the index has been created with the requirements explained above, you will need to reindex the documents from the shakespeare index into the shakespeare_new index.
+
+
+
+
+Initialize the cluster (run only on the master):
+
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+Set up local kubeconfig:
+
+mkdir -p $HOME/.kube
+
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+Apply Flannel CNI network overlay:
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+Join the worker nodes to the cluster:
+
+sudo kubeadm join [your unique string from the kubeadm init command]
+Verify the worker nodes have joined the cluster successfully:
+
+kubectl get nodes

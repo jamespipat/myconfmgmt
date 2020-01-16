@@ -1,0 +1,4 @@
+---
+- name: k8s installation
+  include: k8s-install.yml
+  tags: k8s-install

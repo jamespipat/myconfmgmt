@@ -1,0 +1,263 @@
+GET bank/_search
+{
+  "aggs": {
+    "unique_customers": {
+      "cardinality": {
+        "field": "employer.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "aggs": {
+    "account_in_each_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "aggs": {
+    "by_gender": {
+      "terms": {
+        "field": "gender.keyword",
+        "size": 10
+      },
+      "aggs": {
+        "by_state": {
+          "terms": {
+            "field": "state.keyword",
+            "size": 10
+          }
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "aggs": {
+    "by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 51
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    },
+    "max_avg_balance_by_state": {
+      "max_bucket": {
+        "buckets_path": "by_state>avg_balance"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "aggs": {
+    "by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 50
+      },
+      "aggs": {
+        "sum_balance": {
+          "sum": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": {
+        "range": {
+          "age": {
+            "gte": 30
+          }
+        }
+      }
+    }
+  }
+}
+
+// Bucket Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "request_per_day": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "year"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "response_codes": {
+      "terms": {
+        "field": "response.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+// Metric Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "average_byte" {
+      "avg": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "sum_of_bytes": {
+      "sum": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "unique_clients": {
+      "cardinality": {
+        "field": "clientip.keyword"
+      }
+    }
+  }
+}
+
+// Nested Aggregation
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "clients_per_day": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "day"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "extension": {
+      "terms": {
+        "field": "extension.keyword",
+        "size": 10,
+        "order": {
+          "average_bytes": "desc"
+        }
+      },
+      "aggs": {
+        "average_bytes": {
+          "avg": {
+            "field": "bytes"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Pipeline aggreagation
+// parent
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "bytes_per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      },
+      "aggs": {
+        "sum_of_bytes": {
+          "sum": {
+            "field": "bytes"
+          }
+        },
+        "cumulative_bytes": {
+          "cumulative_sum": {
+            "buckets_path": "sum_of_bytes"
+          }
+        },
+        "bytes_per_second": {
+          "derivative": {
+            "buckets_path": "cumulative_bytes",
+            "unit": "second"
+          }
+        }
+      }
+    }
+  }
+}
+
+// siblings
+GET logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "client_per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    },
+    "max": {
+      "max_bucket": {
+        "buckets_path": "client_per_hour>unique_clients"
+      }
+    }
+  }
+}

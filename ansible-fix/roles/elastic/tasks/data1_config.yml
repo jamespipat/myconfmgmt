@@ -61,7 +61,7 @@
 # - name: add repository
 #   shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic.list
 
-# - name: add repository
+# - name: add gpg key
 #   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
 # - name: Install elasticsearch

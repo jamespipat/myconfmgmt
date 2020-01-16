@@ -1,0 +1,4 @@
+---
+- hosts: "{{ hostnames }}"
+  roles:
+    - k8s
