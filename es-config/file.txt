@@ -224,22 +224,15 @@ The new field mapping and custom analyzer should be created on a new index calle
 
 
 
-Initialize the cluster (run only on the master):
+high availability
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
+https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/
 
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-Set up local kubeconfig:
+secure cluster
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+https://kubernetes.io/docs/concepts/cluster-administration/cluster-administration-overview/
+https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
+https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/
 
-mkdir -p $HOME/.kube
 
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-Apply Flannel CNI network overlay:
-
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-Join the worker nodes to the cluster:
-
-sudo kubeadm join [your unique string from the kubeadm init command]
-Verify the worker nodes have joined the cluster successfully:
-
-kubectl get nodes
