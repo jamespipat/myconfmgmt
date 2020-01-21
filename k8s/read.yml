@@ -622,14 +622,14 @@ kubectl get nodes chadcrowell3c.mylabserver.com --show-labels
 
 
 # Application lifecycle
-https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/
-https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
-https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#scaling-your-application
-https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-https://kubernetes.io/docs/concepts/configuration/secret/
-https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/
+# https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
+# https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#scaling-your-application
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# https://kubernetes.io/docs/concepts/configuration/secret/
+# https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+# https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
 
 
