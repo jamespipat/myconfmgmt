@@ -1,5 +1,4 @@
 {
-    "_ansible_facts_gathered": true,
     "ansible_all_ipv4_addresses": [
         "172.31.24.42"
     ],
@@ -21,23 +20,23 @@
         "root": "UUID=bbf64c6d-bc15-4ae0-aa4c-608fd9820d95"
     },
     "ansible_date_time": {
-        "date": "2020-01-16",
-        "day": "16",
-        "epoch": "1579148824",
-        "hour": "04",
-        "iso8601": "2020-01-16T04:27:04Z",
-        "iso8601_basic": "20200116T042704183290",
-        "iso8601_basic_short": "20200116T042704",
-        "iso8601_micro": "2020-01-16T04:27:04.183373Z",
-        "minute": "27",
+        "date": "2020-01-21",
+        "day": "21",
+        "epoch": "1579623070",
+        "hour": "23",
+        "iso8601": "2020-01-21T16:11:10Z",
+        "iso8601_basic": "20200121T231110252918",
+        "iso8601_basic_short": "20200121T231110",
+        "iso8601_micro": "2020-01-21T16:11:10.252992Z",
+        "minute": "11",
         "month": "01",
-        "second": "04",
-        "time": "04:27:04",
-        "tz": "UTC",
-        "tz_offset": "+0000",
-        "weekday": "Thursday",
-        "weekday_number": "4",
-        "weeknumber": "02",
+        "second": "10",
+        "time": "23:11:10",
+        "tz": "+07",
+        "tz_offset": "+0700",
+        "weekday": "Tuesday",
+        "weekday_number": "2",
+        "weeknumber": "03",
         "year": "2020"
     },
     "ansible_default_ipv4": {
@@ -102,9 +101,9 @@
             "sas_address": null,
             "sas_device_handle": null,
             "scheduler_mode": "none",
-            "sectors": "182456",
+            "sectors": "36808",
             "sectorsize": "512",
-            "size": "89.09 MB",
+            "size": "17.97 MB",
             "support_discard": "4096",
             "vendor": null,
             "virtual": 1
@@ -125,9 +124,9 @@
             "sas_address": null,
             "sas_device_handle": null,
             "scheduler_mode": "none",
-            "sectors": "36824",
+            "sectors": "182456",
             "sectorsize": "512",
-            "size": "17.98 MB",
+            "size": "89.09 MB",
             "support_discard": "4096",
             "vendor": null,
             "virtual": 1
@@ -148,9 +147,9 @@
             "sas_address": null,
             "sas_device_handle": null,
             "scheduler_mode": "none",
-            "sectors": "36808",
+            "sectors": "36824",
             "sectorsize": "512",
-            "size": "17.97 MB",
+            "size": "17.98 MB",
             "support_discard": "4096",
             "vendor": null,
             "virtual": 1
@@ -437,8 +436,8 @@
         "PWD": "/root",
         "SHELL": "/bin/bash",
         "SHLVL": "1",
-        "SSH_CLIENT": "202.176.116.200 64088 22",
-        "SSH_CONNECTION": "202.176.116.200 64088 172.31.24.42 22",
+        "SSH_CLIENT": "171.98.29.8 56830 22",
+        "SSH_CONNECTION": "171.98.29.8 56830 172.31.24.42 22",
         "USER": "root",
         "XDG_RUNTIME_DIR": "/run/user/0",
         "XDG_SESSION_ID": "8",
@@ -451,12 +450,13 @@
     "ansible_hostname": "master",
     "ansible_hostnqn": "",
     "ansible_interfaces": [
-        "lo",
-        "ens5"
+        "ens5",
+        "lo"
     ],
     "ansible_is_chroot": false,
     "ansible_iscsi_iqn": "iqn.1993-08.org.debian:01:64f8ca20f61",
     "ansible_kernel": "4.15.0-1057-aws",
+    "ansible_kernel_version": "#59-Ubuntu SMP Wed Dec 4 10:02:00 UTC 2019",
     "ansible_lo": {
         "active": true,
         "device": "lo",
@@ -552,16 +552,16 @@
     },
     "ansible_machine": "x86_64",
     "ansible_machine_id": "9ef2866073d1434aa3bdbde3f2f26eb1",
-    "ansible_memfree_mb": 820,
+    "ansible_memfree_mb": 3127,
     "ansible_memory_mb": {
         "nocache": {
-            "free": 1909,
-            "used": 1976
+            "free": 3591,
+            "used": 294
         },
         "real": {
-            "free": 820,
+            "free": 3127,
             "total": 3885,
-            "used": 3065
+            "used": 758
         },
         "swap": {
             "cached": 0,
@@ -573,27 +573,43 @@
     "ansible_memtotal_mb": 3885,
     "ansible_mounts": [
         {
-            "block_available": 3599154,
+            "block_available": 3155111,
             "block_size": 4096,
             "block_total": 5065871,
-            "block_used": 1466717,
+            "block_used": 1910760,
             "device": "/dev/nvme0n1p1",
             "fstype": "ext4",
-            "inode_available": 2242737,
+            "inode_available": 2234068,
             "inode_total": 2560000,
-            "inode_used": 317263,
+            "inode_used": 325932,
             "mount": "/",
             "options": "rw,relatime,discard,data=ordered",
-            "size_available": 14742134784,
+            "size_available": 12923334656,
             "size_total": 20749807616,
             "uuid": "bbf64c6d-bc15-4ae0-aa4c-608fd9820d95"
         },
         {
             "block_available": 0,
             "block_size": 131072,
+            "block_total": 144,
+            "block_used": 144,
+            "device": "/dev/loop0",
+            "fstype": "squashfs",
+            "inode_available": 0,
+            "inode_total": 15,
+            "inode_used": 15,
+            "mount": "/snap/amazon-ssm-agent/1455",
+            "options": "ro,nodev,relatime",
+            "size_available": 0,
+            "size_total": 18874368,
+            "uuid": "N/A"
+        },
+        {
+            "block_available": 0,
+            "block_size": 131072,
             "block_total": 713,
             "block_used": 713,
-            "device": "/dev/loop0",
+            "device": "/dev/loop1",
             "fstype": "squashfs",
             "inode_available": 0,
             "inode_total": 12842,
@@ -610,22 +626,6 @@
             "block_total": 144,
             "block_used": 144,
             "device": "/dev/loop2",
-            "fstype": "squashfs",
-            "inode_available": 0,
-            "inode_total": 15,
-            "inode_used": 15,
-            "mount": "/snap/amazon-ssm-agent/1455",
-            "options": "ro,nodev,relatime",
-            "size_available": 0,
-            "size_total": 18874368,
-            "uuid": "N/A"
-        },
-        {
-            "block_available": 0,
-            "block_size": 131072,
-            "block_total": 144,
-            "block_used": 144,
-            "device": "/dev/loop1",
             "fstype": "squashfs",
             "inode_available": 0,
             "inode_total": 15,
@@ -669,10 +669,10 @@
     "ansible_processor": [
         "0",
         "GenuineIntel",
-        "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+        "Intel(R) Xeon(R) Platinum 8175M CPU @ 2.50GHz",
         "1",
         "GenuineIntel",
-        "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz"
+        "Intel(R) Xeon(R) Platinum 8175M CPU @ 2.50GHz"
     ],
     "ansible_processor_cores": 1,
     "ansible_processor_count": 1,
@@ -758,7 +758,7 @@
     ],
     "ansible_system_capabilities_enforced": "True",
     "ansible_system_vendor": "Amazon EC2",
-    "ansible_uptime_seconds": 9211,
+    "ansible_uptime_seconds": 3787,
     "ansible_user_dir": "/root",
     "ansible_user_gecos": "root",
     "ansible_user_gid": 0,

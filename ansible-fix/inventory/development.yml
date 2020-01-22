@@ -33,16 +33,9 @@ all:
     #   hosts:
     #     yegojidmal11c.mylabserver.com:
     #     yegojidmal12c.mylabserver.com:
-    debian:
-      hosts:
-        yegojidmal11c.mylabserver.com:
-        yegojidmal12c.mylabserver.com:
-        yegojidmal13c.mylabserver.com: 
-        yegojidmal14c.mylabserver.com:
     data:
       hosts:
-        yegojidmal12c.mylabserver.com:
-        yegojidmal13c.mylabserver.com:
+        yegojidmal[12:13]c.mylabserver.com:
     master:
       hosts:
         yegojidmal11c.mylabserver.com:
@@ -55,6 +48,7 @@ all:
     another:
       hosts:
         yegojidmal14c.mylabserver.com:
-
-
-
+    debian:
+      children:
+        master:
+        data:
