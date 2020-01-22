@@ -1,0 +1,18 @@
+all:
+  children:
+    media:
+      hosts:
+        media1:
+        media2:
+      vars:
+        media_content: /var/media/content/
+        media_index: /opt/media/mediaIndex
+    webservers:
+      hosts:
+        web1:
+          vars:
+            script_files: /usr/local/scripts
+        web2:
+      vars:
+        httpd_webroot: /var/www/
+        httpd_config: /etc/httpd/
