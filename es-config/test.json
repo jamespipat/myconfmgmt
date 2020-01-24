@@ -1,0 +1,146 @@
+GET bank/_search
+{
+  "from": 0,
+  "size": 50, 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": {
+              "value": "F"
+            }
+          }
+        },
+        {
+          "range": {
+            "balance": {
+              "gt": 10000
+            }
+          }
+        },
+        {
+          "terms": {
+            "state.keyword": [
+              "PA",
+              "VA",
+              "IL"
+            ]
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "age": {
+            "gte": 18,
+            "lte": 35
+          }
+        }
+      }
+    }
+  },
+  "sort": [
+    {
+      "age": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+GET shakespeare/_search
+{
+  "from": 0,
+  "size": 20, 
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "text_entry": "life"
+          }
+        },
+        {
+          "match": {
+            "text_entry": "love"
+          }
+        },
+        {
+          "match": {
+            "text_entry": "death"
+          }
+        }
+      ],
+      "minimum_should_match" : 2
+    }
+  },
+  "highlight": {
+    "pre_tags": ["<b>"],
+    "post_tags": ["</b>"],
+    "fields": {
+      "text_entry": {}
+    }
+  }
+}
+
+
+GET logs/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "fuzzy": {
+            "relatedContent.twitter:description": {
+              "value": "never",
+              "transpositions": true,
+              "fuzziness": 2
+            }
+          }
+        },
+        {
+          "match": {
+            "relatedContent.twitter:title": "Golden State"
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "relatedContent.twitter:description": {},
+      "relatedContent.twitter:title": {}
+    }
+  }
+}
+
+
+GET bank/_search
+{
+  "size": 0, 
+  "aggs": {
+    "by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 50,
+        "order": {
+          "balance_avg": "desc"
+        }
+      },
+      "aggs": {
+        "balance_avg": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "range": {
+      "age": {
+        "gt": 30
+      }
+    }
+  }
+}
