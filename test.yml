@@ -1,18 +1,49 @@
+---
 all:
   children:
-    media:
+    web:
       hosts:
-        media1:
-        media2:
-      vars:
-        media_content: /var/media/content/
-        media_index: /opt/media/mediaIndex
-    webservers:
-      hosts:
-        web1:
-          vars:
-            script_files: /usr/local/scripts
-        web2:
-      vars:
-        httpd_webroot: /var/www/
-        httpd_config: /etc/httpd/
+        node1:
+          ansible_host: 10.0.1.236
+        node2:
+          ansible_host: 10.0.1.242
+
+---
+
+- name: add motd template
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+- name: install nagios
+  yum:
+    name: npre
+    state: latest
+- name: append hosts file
+  lineinfile:
+    path: /etc/hosts
+    insertafter: EOF
+    line: 10.0.1.123 nagios.example.com
+- name: Add the user 'noc'
+  user:
+    name: noc
+    shell: /bin/bash
+- name: add public key to noc's home
+  copy:
+    src:  /home/ansible/resources/authorized_keys 
+    dest: /home/noc/.ssh/authorized_keys
+    owner: noc
+    group: noc
+    mode: '0600'
+- name: Create a .ssh directory
+  file:
+    path: /home/noc/.ssh
+    state: directory
+    mode: '0755'
+  
+
+
+
+      
