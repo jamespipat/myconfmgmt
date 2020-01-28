@@ -236,3 +236,227 @@ https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
 https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/
 
 
+curl -XGET "http://localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+"size": 50,
+"sort": [
+ {
+   "age": {
+     "order": "asc"
+   }
+ },
+ {
+   "balance": {
+     "order": "desc"
+   }
+ },
+ {
+   "lastname.keyword": {
+     "order": "asc"
+   }
+ }
+], 
+"query": {
+ "bool": {
+   "must": [
+     {
+       "term": {
+         "gender.keyword": {
+           "value": "F"
+         }
+       }
+     },
+     {
+       "range": {
+         "balance": {
+           "gt": 10000
+         }
+       }
+     }
+   ],
+   "must_not": [
+     {
+       "terms": {
+         "state.keyword": [
+           "PA",
+           "VA",
+           "IL"
+         ]
+       }
+     }
+   ],
+   "filter": {
+     "range": {
+       "age": {
+         "gte": 18,
+         "lte": 35
+       }
+     }
+   }
+ }
+}
+}' > search.json
+
+curl -XGET "http://localhost:9200/shakespeare/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+"size": 20, 
+"highlight": {
+ "pre_tags": "<b>;",
+ "post_tags": "</b>;",
+ "fields": {
+   "text_entry.english": {}
+ }
+},
+"query": {
+ "bool": {
+   "should": [
+     {
+       "match": {
+         "text_entry.english": "life"
+       }
+     },
+     {
+       "match": {
+         "text_entry.english": "love"
+       }
+     },
+     {
+       "match": {
+         "text_entry.english": "death"
+       }
+     }
+   ],
+   "minimum_should_match": 2
+ }
+}
+}' > search.json
+
+curl -XGET "http://localhost:9200/logs/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+"highlight": {
+ "fields": {
+   "relatedContent.twitter:description": {},
+   "relatedContent.twitter:title": {}
+ }
+},
+"query": {
+ "bool": {
+   "must": [
+     {
+       "fuzzy": {
+         "relatedContent.twitter:description": {
+           "value": "never",
+           "fuzziness": 2,
+           "transpositions": true
+         }
+       }
+     },
+     {
+       "match_phrase": {
+         "relatedContent.twitter:title": "Golden State"
+       }
+     }
+   ]
+ }
+}
+}' > search.json
+
+curl -XGET "http://localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+"size": 0, 
+"aggs": {
+ "state": {
+   "terms": {
+     "field": "state.keyword",
+     "size": 5,
+     "order": {
+       "avg_balance": "desc"
+     }
+   },
+   "aggs": {
+     "avg_balance": {
+       "avg": {
+         "field": "balance"
+       }
+     }
+   }
+ }
+},
+"query": {
+ "range": {
+   "age": {
+     "gte": 30
+   }
+ }
+}
+}' > /home/elastic/aggregate.json
+
+curl -XGET "http://localhost:9200/shakespeare/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "aggs": {
+    "play": {
+      "terms": {
+        "field": "play_name",
+        "size": 10
+      },
+      "aggs": {
+        "speaker": {
+          "cardinality": {
+            "field": "speaker"
+          }
+        }
+      }
+    },
+    "max": {
+      "max_bucket": {
+        "buckets_path": "play>speaker"
+      }
+    }
+  }
+}' > /home/elastic/aggregate.json
+
+curl -XGET "http://localhost:9200/logs/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "range": {
+      "@timestamp": {
+        "gte": "2015-05-19T00:00:00",
+        "lte": "2015-05-19T23:59:59"
+      }
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      },
+      "aggs": {
+        "clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        },
+        "cumulative_clients": {
+          "cumulative_sum": {
+            "buckets_path": "clients"
+          }
+        },
+        "clients_per_minute": {
+          "derivative": {
+            "buckets_path": "cumulative_clients",
+            "unit": "minute"
+          }
+        }
+      }
+    },
+    "peak": {
+      "max_bucket": {
+        "buckets_path": "hour>clients"
+      }
+    }
+  }
+}' > /home/elastic/aggregate.json
+
+
