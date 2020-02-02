@@ -62,3 +62,23 @@ spec:
     imagePullPolicy: IfNotPresent
     name: busybox
   restartPolicy: Always
+
+# test PV pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redispod 
+spec:
+  containers:
+  - image: redis
+    name: redisdb
+    volumeMounts:
+    - name: redis-pv
+      mountPath: /data
+    ports:
+    - containerPort: 6379
+      protocol: TCP
+  volumes:
+  - name: redis-pv
+    persistentVolumeClaim:
+      claimName: redisdb-pvc
