@@ -178,11 +178,11 @@ metadata:
   namespace: default
 spec:
   containers:
-  - image: busybox:1.28.4
+  - image: busybox:latest
     command:
       - sleep
       - "3600"
-    imagePullPolicy: IfNotPresent
+    # imagePullPolicy: IfNotPresent
     name: busybox
   restartPolicy: Always
 View the resolv.conf file that contains the nameserver and search in DNS:
@@ -284,7 +284,7 @@ spec:
       - args:
         - sleep
         - "99999"
-        image: busybox
+        image: busybox:latest
         name: main
 Create the deployment:
 
