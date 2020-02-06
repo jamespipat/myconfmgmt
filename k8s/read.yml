@@ -525,9 +525,9 @@ metadata:
   name: resource-pod2
 spec:
   nodeSelector:
-    kubernetes.io/hostname: "chadcrowell3c.mylabserver.com"
+    kubernetes.io/hostname: "data1"
   containers:
-  - image: busybox
+  - image: busybox:latest
     command: ["dd", "if=/dev/zero", "of=/dev/null"]
     name: pod2
     resources:
@@ -1128,11 +1128,3 @@ spec:
   gcePersistentDisk:
     pdName: mongodb
     fsType: ext4
-
-
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection
-# https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
-# https://kubernetes.io/docs/concepts/storage/volumes/
-# https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolumeclaim
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-# https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection
