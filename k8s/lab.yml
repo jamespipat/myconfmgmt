@@ -1,0 +1,289 @@
+# Creating a ClusterRole to Access a PV in Kubernetes
+
+# You have been given access to a three-node cluster. Within that cluster, a PV has already been provisioned. You will need to make sure you can access the PV directly from a pod in your cluster. By default, pods cannot access PVs directly, so you will need to create a ClusterRole and test the access after it's been created. Every ClusterRole requires a ClusterRoleBinding to bind the role to a user, service account, or group. After you have created the ClusterRole and ClusterRoleBinding, try to access the PV directly from a pod. Perform the following tasks in order to complete this hands-on lab:
+
+#     View the Persistent Volume using the kubectl command line tool.
+#     Create a ClusterRole.
+#     Create a ClusterRoleBinding.
+#     Create a pod within the namespace 'web' to access the PV.
+#     Request access to the PV from the pod.
+
+
+    Use the following command to view the Persistent Volume within the cluster:
+
+        kubectl get pv
+
+        Create a ClusterRole.
+
+        Use the following command to create the ClusterRole:
+        
+        kubectl create clusterrole pv-reader --verb=get,list --resource=persistentvolumes 
+
+        Create a ClusterRoleBinding.
+
+        Use the following command to create the ClusterRoleBinding:
+        
+        kubectl create clusterrolebinding pv-test --clusterrole=pv-reader --serviceaccount=web:default
+
+        Create a pod to access the PV.
+
+        Use the following YAML to create a pod that will proxy the connection and allow you to curl the address:
+        
+         apiVersion: v1
+         kind: Pod
+         metadata:
+           name: curlpod
+           namespace: web
+         spec:
+           containers:
+           - image: tutum/curl
+             command: ["sleep", "9999999"]
+             name: main
+           - image: linuxacademycontent/kubectl-proxy
+             name: proxy
+           restartPolicy: Always
+        Use the following command to create the pod:
+        
+         kubectl apply -f curlpod.yaml
+
+        Request access to the PV from the pod.
+
+        Use the following command (from within the pod) to access a shell from the pod:
+        
+         kubectl exec -it curlpod -n web -- sh
+        Use the following command to curl the PV resource:
+        
+         curl localhost:8001/api/v1/persistentvolumes
+
+
+
+
+# Creating a Service and Discovering DNS Names in Kubernetes
+
+# You have been given a three-node cluster. Within that cluster, you must perform the following tasks in order to create a service and resolve the DNS names for that service. You will create the necessary Kubernetes resources in order to perform this DNS query. To adequately complete this hands-on lab, you must have a working deployment, a working service, and be able to record the DNS name of the service within your Kubernetes cluster. This means you will perform the following tasks:
+
+#     Create an nginx deployment using the latest nginx image.
+#     Verify the deployment has been created successfully.
+#     Create a service from the nginx deployment created in the previous objective.
+#     Verify the service has been created successfully.
+#     Create a pod that will allow you to perform the DNS query.
+#     Verify that the pod has been created successfully.
+#     Perform the DNS query to the service created in an earlier objective.
+#     Record the DNS name of the service.
+
+
+    Create an nginx deployment, and verify it was successful.
+    Use this command to create an nginx deployment:
+    
+    kubectl run nginx --image=nginx
+    Use this command to verify deployment was successful:
+    
+    kubectl get deployments
+
+    Create a service, and verify the service was successful.
+
+    Use this command to create a service:
+    
+    kubectl expose deployment nginx --port 80 --type NodePort
+    Use this command to verify the service was created:
+    
+    kubectl get services
+
+    Create a pod that will allow you to query DNS, and verify it’s been created.
+
+    Use the following YAML to create the busybox pod spec:
+    
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: busybox
+    spec:
+      containers:
+      - image: busybox:1.28.4
+        command:
+          - sleep
+          - "3600"
+        name: busybox
+      restartPolicy: Always
+    Use the following command to create the busybox pod:
+    
+    kubectl create -f busybox.yaml
+    Use the following command to verify the pod was created successfully:
+    
+    kubectl get pods
+
+    Perform a DNS query to the service.
+
+    Use the following command to query the DNS name of the nginx service:
+    
+    kubectl exec busybox -- nslookup nginx
+
+    Record the DNS name.
+
+    Record the name of:
+    
+    <service-name>.default.svc.cluster.local
+
+
+# Scheduling Pods with Taints and Tolerations in Kubernetes
+# You have been given a three-node cluster. Within that cluster, you must perform the following tasks to taint the production node in order to repel work. You will create the necessary taint to properly label one of the nodes “prod.” Then you will deploy two pods — one to each environment. One pod spec will contain the toleration for the taint. You must perform the following tasks in order to complete this hands-on lab:
+
+#     Taint one of the worker nodes to identify the prod environment.
+#     Create the YAML spec for a pod that will be scheduled to the dev environment.
+#     Create the YAML spec for a pod that will be scheduled to the prod environment.
+#     Deploy each pod to their respective environments.
+#     Verify each pod has been scheduled successfully to each environment.
+
+
+Learning Objectives
+
+Taint one of the worker nodes to repel work.
+
+Use the following command to taint the node:
+
+kubectl taint node <node_name> node-type=prod:NoSchedule
+
+Schedule a pod to the dev environment.
+
+Use the following YAML to specify a pod that will be scheduled to the dev environment:
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: dev-pod
+ labels:
+   app: busybox
+spec:
+ containers:
+ - name: dev
+   image: busybox
+   command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']
+Use the following command to create the pod:
+
+kubectl create -f dev-pod.yaml
+
+Allow a pod to be scheduled to the prod environment.
+
+Use the following YAML to create a deployment and a pod that will tolerate the prod environment:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: prod
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: prod
+ template:
+   metadata:
+     labels:
+       app: prod
+   spec:
+     containers:
+     - args:
+       - sleep
+       - "3600"
+       image: busybox
+       name: main
+     tolerations:
+     - key: node-type
+       operator: Equal
+       value: prod
+       effect: NoSchedule
+Use the following command to create the pod:
+
+kubectl create -f prod-deployment.yaml
+
+Verify each pod has been scheduled and verify the toleration.
+
+Use the following command to verify the pods have been scheduled:
+
+kubectl get pods -o wide
+Verify the toleration of the production pod:
+
+kubectl get pods <pod_name> -o yaml
+
+
+# Performing a Rolling Update of an Application in Kubernetes
+# You have been given a three-node cluster. Within that cluster, you must deploy your application and then successfully update the application to a new version without causing any downtime. You will use the image linuxacademycontent/kubeserve:v1, which will serve as your application. You must perform the steps to verify your app successfully rolled out initially; create a service for your deployment, so it can be used by the end user; and then perform the update, verifying that the update did not experience any service interruption for your end users. You must perform the following tasks in order to complete this hands-on lab:
+
+#     Create and roll out a deployment, and verify the deployment was successful.
+#     Verify the application is using the correct version.
+#     Scale up your application to create high availability.
+#     Create a service from your deployment, so users can access your application.
+#     Perform a rolling update to version 2 of the application.
+#     Verify the app is now at version 2 and there was no downtime to end users.
+
+
+
+Create and roll out version 1 of the application, and verify a successful deployment.
+
+Use the following YAML named kubeserve-deployment.yaml to create your deployment:
+
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: kubeserve
+ spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: kubeserve
+   template:
+     metadata:
+       name: kubeserve
+       labels:
+         app: kubeserve
+     spec:
+       containers:
+       - image: linuxacademycontent/kubeserve:v1
+         name: app
+Use the following command to create the deployment:
+
+ kubectl apply -f kubeserve-deployment.yaml --record
+Use the following command to verify the deployment was successful:
+
+ kubectl rollout status deployments kubeserve
+Use the following command to verify the app is at the correct version:
+
+ kubectl describe deployment kubeserve
+
+Scale up the application to create high availability.
+
+Use the following command to scale up your application to five replicas:
+
+kubectl scale deployment kubeserve --replicas=5
+Use the following command to verify the additional replicas have been created:
+
+kubectl get pods
+
+Create a service, so users can access the application.
+
+Use the following command to create a service for your deployment:
+
+kubectl expose deployment kubeserve --port 80 --target-port 80 --type NodePort
+Use the following command to verify the service is present and collect the cluster IP:
+
+kubectl get services
+Use the following command to verify the service is responding:
+
+curl http://<ip-address-of-the-service>
+
+Perform a rolling update to version 2 of the application, and verify its success.
+
+Use this curl loop command to see the version change as you perform the rolling update:
+
+ while true; do curl http://<ip-address-of-the-service>; done
+Use this command to perform the update (while the curl loop is running):
+
+ kubectl set image deployments/kubeserve app=linuxacademycontent/kubeserve:v2 --v 6
+Use this command to view the additional ReplicaSet created during the update:
+
+ kubectl get replicasets
+Use this command to verify all pods are up and running:
+
+ kubectl get pods
+Use this command to view the rollout history:
+
+ kubectl rollout history deployment kubeserve
