@@ -1,5 +1,17 @@
 zone "test.co.th" {
     type master;
     file "/etc/bind/zones/db.test.co.th";
-#    allow-transfer { slave; };
+#    allow-transfer { ip1; ip2;...};
+#    allow-update { none; }
 };
+
+#zone "test.co.th" {
+#    type slave;
+#    master { master ip; };
+#};
+
+#zone “0.1.10.in-addr.arpa” IN {
+#type master;
+#file “0.1.10.db”;
+#allow-update { none; };
+#};
