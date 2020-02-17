@@ -4,13 +4,13 @@ In this lab, we deploy a SAMBA share for exchanging and sharing files across mul
 Install and Configure SAMBA Server
 SSH into the first server and install the needed packages:
 
-[linuxacademy@ip]$ sudo yum install samba samba-client samba-common cifs-utils
+ sudo yum install samba samba-client samba-common cifs-utils
 Note that the cifs-utils package may not be necessary if using SAMBA 3.
 
 We now need to make edits to the SAMBA configuration file, which is located at /etc/samba.
 
-[linuxacademy@ip]$ cd /etc/samba
-[linuxacademy@ip]$ ll
+ cd /etc/samba
+ ll
 total 20
 -rw-r--r--. 1 root root    20 Jan 17 19:07 lmhosts
 -rw-r--r--. 1 root root   667 Jan 17 19:07 smb.conf
@@ -58,15 +58,15 @@ Save and exit the file.
 
 Create the SAMBA share:
 
-[linuxacademy@ip]$ cd /
-[linuxacademy@ip]$ sudo mkdir /myshare
-[linuxacademy@ip]$ sudo chmod 777 /myshare
-[linuxacademy@ip]$ echo "test file" > /myshare/testfile.txt
+ cd /
+ sudo mkdir /myshare
+ sudo chmod 777 /myshare
+ echo "test file" > /myshare/testfile.txt
 Notice that we set the permissions to 777 because we expect the SAMBA share to take care of any permissions issues.
 
 Since we are using a CentOS 7 server, and SELinux is enabled, by default, we want to set SELinux to permissive mode:
 
-[linuxacademy@ip]$ sudo setenforce 0
+ sudo setenforce 0
 In actual practice, properly configuring SELinux to work with the SAMBA share may be more appropriate; however, this is out of scope for this lab.
 
 With our share created, open up the smb.conf file again, and edit the load printers directive, since our system does not have printers:
@@ -76,7 +76,7 @@ Save and exit the file.
 
 Test the file to see if the configuration is accurate:
 
-[linuxacademy@ip]$ testparm
+ testparm
 Load smb config files from /etc/samba/smb.conf
 rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
 Processing section "[homes]"
@@ -91,11 +91,11 @@ Everything should be configured correctly.
 
 Start the SAMBA and nmb services. nmb allows Windows users to access the share.
 
-[linuxacademy@ip]$ sudo systemctl start smb
-[linuxacademy@ip]$ sudo systemctl start nmd
+ sudo systemctl start smb
+ sudo systemctl start nmd
 Confirm that both services are ready:
 
-[linuxacademy@ip]$ sudo systemctl status -l smb
+ sudo systemctl status -l smb
 ● smb.service - Samba SMB Daemon
    Loaded: loaded (/usr/lib/systemd/system/smb.service; disabled; vendor preset: disabled)
    Active: active (running) since Mon 2017-03-27 17:15:45 UTC; 8s ago
@@ -111,7 +111,7 @@ Mar 27 17:15:45 ip-10-0-1-92 systemd[1]: Starting Samba SMB Daemon...
 Mar 27 17:15:45 ip-10-0-1-92 smbd[9714]: [2017/03/27 17:15:45.506325,  0] ../lib/util/become_daemon.c:124(daemon_ready)
 Mar 27 17:15:45 ip-10-0-1-92 systemd[1]: Started Samba SMB Daemon.
 Mar 27 17:15:45 ip-10-0-1-92 smbd[9714]:   STATUS=daemon 'smbd' finished starting up and ready to serve connections
-[linuxacademy@ip]$ sudo systemctl status -l nmb
+ sudo systemctl status -l nmb
 ● nmb.service - Samba NMB Daemon
    Loaded: loaded (/usr/lib/systemd/system/nmb.service; disabled; vendor preset: disabled)
    Active: active (running) since Mon 2017-03-27 17:15:47 UTC; 27s ago
@@ -125,7 +125,7 @@ Mar 27 17:15:47 ip-10-0-1-92 nmbd[9727]: [2017/03/27 17:15:47.873762,  0] ../lib
 Mar 27 17:15:47 ip-10-0-1-92 nmbd[9727]:   STATUS=daemon 'nmbd' finished starting up and ready to serve connections
 See what shares are available for the SAMBA workgroup:
 
-[linuxacademy@ip]$ nmblookup SAMBA
+ nmblookup SAMBA
 The IP address returned should be the one for the lab server.
 
 Create SAMBA User Accounts
@@ -133,7 +133,7 @@ We want to be able to use user authentication to determine who has access to our
 
 Use the smbpasswd command to create a user, user:
 
-[linuxacademy@ip]$ sudo smbpasswd -a user
+ sudo smbpasswd -a user
 When prompted, enter a password. The user user is now added to the SAMBA database.
 
 Alternatively, we can create a usermap file. Navigate to the /etc/samba directory, and create the file usermap. This file uses a key/pair style of formatting.
@@ -146,7 +146,7 @@ Save and exit the file. We want to reference this file in our configuration, so 
 username map = /etc/samba/usermap
 Save and exit the file. Test the configuration:
 
-[linuxacademy@ip]$ testparm
+ testparm
 Load smb config files from /etc/samba/smb.conf
 rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
 Processing section "[homes]"
@@ -157,7 +157,7 @@ Loaded services file OK.
 Server role: ROLE_STANDALONE
 Since we installed the client tools on this server, we can also practically test our SAMBA share. Retrieve your server's IP address (use ifconfig or pull it from the Live! Lab page), and test as the user user. Note that for the Live! Lab, we want to use the server's private I. Note that for the Live! Lab, we want to use the server's private IP.
 
-[linuxacademy@ip]$ smbclient -U user -L <PRIVATEIP>
+ smbclient -U user -L <PRIVATEIP>
 Domain=[SAMBA] OS=[Windows 6.1] Server=[Samba 4.4.4]
 
     Sharename       Type      Comment
@@ -179,7 +179,7 @@ Enter the password when prompted.
 
 Here we can see our available shares. To further test and see if we can access the share itself:
 
-[linuxacademy@ip]$ smbclient -U user //<PRIVATEIP>/myshare
+ smbclient -U user //<PRIVATEIP>/myshare
 Domain=[SAMBA] OS=[Windows 6.1] Server=[Samba 4.4.4]
 smb: \>
 Enter the password when prompted. This gives us a SAMBA prompt (smb: \>), which allows us to access our share. Run the ls command to ensure the test file is there, then quit
@@ -193,7 +193,7 @@ smb: \> ls
 smb: \> quit
 Finally, run smbstatus to see who is connected and what shares they are using.
 
-[linuxacademy@ip]$ sudo smbstatus
+ sudo smbstatus
 This will output a mostly-blank response, since we have no connected clients, and no users are on our share.
 
 Configure Client and Mount Shares
@@ -302,4 +302,4 @@ tmpfs                100M     0  100M   0% /run/user/1001
 //10.0.1.94/myshare  8.0G  1.5G  6.6G  19% /mnt/sambashare
 Return to the first server, and run smbstatus.
 
-[linuxacademy@ip]$ sudo smbstatus
+ sudo smbstatus
