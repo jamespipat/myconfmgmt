@@ -44,6 +44,124 @@ all:
     mode: '0755'
   
 
+    
+    Start the Guest VM
+    
+    To start the Guest VM, you will want to install virt-manager with yum -y install virt-manager. Once this is complete, you can access it from the Applications menu.
+    
+    You'll need to reset the Guest VM's root password - please set it to p1n3h34d.
+    
+    
+    Download and Configure Apache to serve "index.html" from /var/web and access it from the host machine
+    
+    You can install Apache using:
+    
+    yum install httpd
+    
+    And then editing /etc/httpd/conf/httpd.conf to change the DocumentRoot as required.
+    
+    
+    Create 3 users that belong to the "Instructors" supplemental group. The users are: Derek, Tom, and Kenny. Ensure Tom cannot login to a shell. Set Tom's account to expire in 10 days from the current date.
+    
+    You can create the users using the useradd command. Shell modifications are done with usermod and you can set an expiration date using the chage command
+    
+    
+    Configure Umask to ensure all files created by any user cannot be accessed by "other" users
+    
+    The default umask for all users is set in the /etc/profile file.
+    
+    
+    Find all files in /etc (without searching subdirectories) that are older than 720 days and output them to /root/oldfiles.
+    
+    The find command has numerous flags that can help with this.
+    
+    -maxdepth 1 will search only /etc and not any subdirectories.
+    
+    -mtime +720 will match on files that were modified more than 720 days ago.
+    
+    So the complete command is:
+    
+    find /etc/ -maxdepth 1 -mtime +720 > /root/oldfiles
+    
+    
+    Find all log messages containing "ACPI" in /var/log/messages and export them to a file called "logs" stored in the root home directory. Then, gzip /var/log and save to /tmp/log_archive.tgz
+    
+    To find matching lines in a file you should use grep.
+    
+    grep ACPI /var/log/messages > /root/logs
+    
+    Then you need to compress /var/log.
+    
+    tar -czf /tmp/log_archive.tgz /var/log/
+    
+    
+    Modify the GRUB timeout to be only 1 second instead of 5
+    
+    Edit /etc/default/grub and change the timeout to 1.
+    
+    Then you must run grub2-mkconfig to rebuild the grub configuration and make the change live.
+    
+    
+    Create a cronjob for derek that runs echo /etc/redhat-release daily at 4:27pm and redirects the output to /home/derek/release
+    
+    To edit a user's crontab you can run:
+    
+    crontab -e derek
+    
+    And then the format of the line for this task would be:
+    
+    27 16 * * * echo /etc/redhat-release > /home/derek/release
+    
+    
+    Configure time.nist.gov as the only NTP server
+    
+    The NTP client in RHEL and CentOS is chrony. The configuration file for chrony is /etc/chrony.conf.
+    
+    Edit that file and remove the default lines that begin with server and write a new one similar to:
+    
+    server time.nist.gov
+    
+    
+    Create an 800M swap partition on the vdb disk and ensure it is persistent. Use the UUID to enable persistence.
+    keyboard_arrow_down
+    
+    Create a new logical volume, LV-A, with a size of 30 extents belonging to the volume group, VG-A, with a PE size of 32M. After you create the volume, configure the server to mount it persistently on /mnt.
+    
+    First we need to create a physical volume. Let's assume your disk is /dev/sdb.
+    
+    pvcreate /dev/sdb
+    
+    Then we need to create the Volume Group named VG-A with a 32M Physical Extent size.
+    
+    vgcreate VG-A /dev/sdb -s 32m
+    
+    Finally we create the Logical Volume named LV-A with 30 extents.
+    
+    lvcreate -n LV-A -l 30 VG-A
+    
+    Now you can format the volume:
+    
+    mkfs.xfs /dev/VG-A/LV-A
+    
+    You can then edit /etc/fstab and add the following line:
+    
+    /dev/mapper/VG-A-LV-A     /mnt    xfs    defaults    0 0
+    
+    
+    On the *host*, not the guest VM, Utilize ldap.linuxacademy.com for SSO and configure autofs to mount users' home directories on login. Ensure you utilize Kerberos
+    
+    The server is ldap.linuxacademy.com The Kerberos certificate is located at http://ldap.linuxacademy.com/pub/cert.pem
+    
+    
+    Change the hostname of the guest to "rhcsa"
+    
+    For this task you can use hostnamectl.
+    
+    hostnamectl set-hostname rhcsa
 
-
-      
+    
+    yum module enable module-name:stream
+    yum install module-name
+    yum module list
+    yum module info --profile httpd
+    yum install httpd/minimal
