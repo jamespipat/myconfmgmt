@@ -1,0 +1,16 @@
+---
+- name: install repositories
+  dnf:
+    name: https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm
+    state: latest
+
+- name: disable MySQL module
+  shell: yum module disable mysql
+
+- name: install mysql 8.0
+  dnf:
+    name: mysql-community-server
+    state: latest
+
+
+  

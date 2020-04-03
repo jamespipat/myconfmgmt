@@ -165,3 +165,81 @@ all:
     yum module list
     yum module info --profile httpd
     yum install httpd/minimal
+
+
+    # Nginx proxy for Elasticsearch + Kibana
+#
+# In this setup, we are password protecting the saving of dashboards. You may
+# wish to extend the password protection to all paths.
+#
+# Even though these paths are being called as the result of an ajax request, the
+# browser will prompt for a username/password on the first request
+#
+# If you use this, you'll want to point config.js at http://FQDN:443/ instead of
+# http://FQDN:9200
+#
+# Thanks : https://gist.github.com/thisismitch/2205786838a6a5d61f55
+#
+server {
+  listen                *:443 ;
+  
+  server_name           website.com;
+  access_log            /var/log/nginx/website.com.access.log;   
+  error_log             /var/log/nginx/website.com.error.log; 
+  
+  ssl on;
+  ssl_protocols  SSLv2 TLSv1 TLSv2 TLSv3; # Remove SSLv3 because of security hole!
+  ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+  ssl_prefer_server_ciphers   on;
+  ssl_certificate /etc/pki/tls/certs/website.com.crt;
+  ssl_certificate_key /etc/pki/tls/private/website.com.key;
+
+ 
+  location /kibana {
+    root  /usr/share/nginx/website.com/;
+    index  index.html  index.htm;
+	auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+  }
+ 
+  location ~ ^/_aliases$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+  }
+  location ~ ^/.*/_aliases$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+  }
+  location ~ ^/_nodes$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+  }
+  location ~ ^/.*/_search$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+  }
+  location ~ ^/.*/_mapping {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+  }
+ 
+  # Password protected end points
+  location ~ ^/kibana-int/dashboard/.*$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+    limit_except GET {
+      proxy_pass http://127.0.0.1:9200;
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+    }
+  }
+  location ~ ^/kibana-int/temp.*$ {
+    proxy_pass http://127.0.0.1:9200;
+    proxy_read_timeout 90;
+    limit_except GET {
+      proxy_pass http://127.0.0.1:9200;
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+    }
+  }
+}
