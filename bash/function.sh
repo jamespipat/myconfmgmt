@@ -3,7 +3,7 @@
 VAR1="GLOBALLY"
 
 func1() {
-    VAR2="LOCALLY"
+    local VAR2="LOCALLY"
     echo "call inside function $VAR2"
 }
 

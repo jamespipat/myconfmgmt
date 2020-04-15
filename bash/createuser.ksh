@@ -2,7 +2,7 @@
 
 pass="P@ssw0rd"
 insteam=("edmacc" "d2550_01" "emerid")
-Infrateam=("infacc01" "infacc02" "ssmon" "satlusr")
+infrateam=("infacc01" "infacc02" "ssmon" "satlusr")
 appsupteam=("apsacc01" "apsacc02")
 acforchgteam=("chgacc01" "chgacc02")
 acforappteam="appusr"
@@ -17,7 +17,7 @@ for user in ${insteam[@]} ;do
     mkuser gecos="Account for EDMZ System (INS Team)" $user &>/dev/null
 done
 
-for user in ${Infrateam[@]} ;do
+for user in ${infrateam[@]} ;do
     mkuser gecos="Account for EDMZ System (Infra Team)" $user &>/dev/null
 done
 
@@ -48,7 +48,7 @@ done
 
 # Reset password
 
-for user in ${insteam[@]} ${Infrateam[@]} ${appsupteam[@]} ${acchgteam[@]} ${acforappteam[@]} ${acforhardteam[@]} ${acforpatchteam[@]} ${itiateam[@]};do
+for user in ${insteam[@]} ${infrateam[@]} ${appsupteam[@]} ${acchgteam[@]} ${acforappteam[@]} ${acforhardteam[@]} ${acforpatchteam[@]} ${itiateam[@]};do
     echo "$user:$pass" | chpasswd -c &>/dev/null
     chuser maxage=6 $user &>/dev/null
 done
@@ -62,7 +62,7 @@ echo "ssmon:ssmon@690" | chpasswd -c &>/dev/null
 
 # Add permission sudo
 
-for user in ${insteam[@]} ${Infrateam[@]} ${appsupteam[@]} ${acchgteam[@]} ${acforappteam[@]} ${acforhardteam[@]} ${acforpatchteam[@]} ${itiateam[@]};do
+for user in ${insteam[@]} ${infrateam[@]} ${appsupteam[@]} ${acchgteam[@]} ${acforappteam[@]} ${acforhardteam[@]} ${acforpatchteam[@]} ${itiateam[@]};do
     echo "$user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
     echo "Defaults:$user !requiretty" >> /etc/sudoers
 done
