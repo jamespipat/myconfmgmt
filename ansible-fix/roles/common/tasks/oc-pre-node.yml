@@ -1,0 +1,47 @@
+---
+# - name: install package requirement
+#   yum:
+#     name:
+#       - wget
+#       - net-tools
+#       - bind-utils
+#       - yum-utils
+#       - iptables-services
+#       - bridge-utils
+#       - bash-completion
+#       - kexec-tools
+#       - sos
+#       - psacct
+#       - epel-release
+#     state: latest
+  
+# - name: install base package
+#   yum:
+#     name:      
+#       - ansible
+#       - pyOpenSSL
+#       - python-cryptography
+#       - python-lxml
+#     state: latest
+#     enablerepo: epel
+
+# - name: change hostname master
+#   hostname:
+#     name: master.192.168.128.5.xip.io
+#   when: ansible_facts['default_ipv4']['address'] == "192.168.128.5"
+# - name: change hostname node1
+#   hostname:
+#     name: node1.192.168.128.6.xip.io
+#   when: ansible_facts['default_ipv4']['address'] == "192.168.128.6"
+# - name: change hostname infra
+#   hostname:
+#     name: infra.192.168.128.7.xip.io
+#   when: ansible_facts['default_ipv4']['address'] == "192.168.128.7"
+
+- name: install docker
+  yum:
+    name: 
+      - docker-1.13.1
+    state: latest
+
+    

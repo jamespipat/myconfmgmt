@@ -8,5 +8,8 @@
 - import_tasks: debian10-initial.yml
   tags: debian10
 
+- import_tasks: oc-pre-node.yml
+  tags: oc-preinstall
+
 
 

@@ -29,7 +29,7 @@ Verify your configuration. Confirm that the /etc/sysconfig/docker-storage file h
 Start or restart Docker
 
 # Managing container logs
-append --log-opt max-size=5M --log-opt max-file=3 to the OPTIONS line
+append --log-opt max-size=5M --log-opt max-file=5 to the OPTIONS line in the /etc/sysconfig/docker file
 Restart the Docker
 You can view the container logs in the /var/lib/docker/containers/<hash>/ directory on the node where the container is running.
 
@@ -41,20 +41,24 @@ os_firewall_use_firewalld=true
 openshift_pkg_version='-3.11.0'
 openshift_disable_check=memory_availability,disk_availability
 openshift_master_identity_providers=[{'name': 'htpasswd_auth','login': 'true', 'challenge': 'true','kind': 'HTPasswdPasswordIdentityProvider',}]
-openshift_master_default_subdomain=ns1.test.co.th
+openshift_master_default_subdomain=infra.192.168.128.7.xip.io
 
 [master]
-
+master.192.168.128.5.xip.io
 
 [nodes]
+master.192.168.128.5.xip.io 
+node1.192.168.128.6.xip.io openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+infra.192.168.128.7.xip.io openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
 
 [etcd]
+master.192.168.128.5.xip.io
 
 # wildcard dns
 Change hostname od each node to
 nodename.<ip>.xip.io
 
 revise /etc/hosts to
-<ip>    master    master.<ip>.xip.io
-<ip>    infra    infra.<ip>.xip.io
-<ip>    node1    node1.<ip>.xip.io
+192.168.128.5    master    master.192.168.128.5.xip.io
+192.168.128.6    node1    node1.192.168.128.6.xip.io
+192.168.128.7    infra    infra.192.168.128.7.xip.io

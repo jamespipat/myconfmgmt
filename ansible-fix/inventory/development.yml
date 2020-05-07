@@ -52,3 +52,8 @@ all:
       children:
         master:
         data:
+    openshift:
+      hosts:
+        192.168.128.5:
+        192.168.128.6:
+        192.168.128.7:
