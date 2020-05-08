@@ -47,9 +47,9 @@ openshift_master_default_subdomain=infra.192.168.128.7.xip.io
 master.192.168.128.5.xip.io
 
 [nodes]
-master.192.168.128.5.xip.io 
-node1.192.168.128.6.xip.io openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
-infra.192.168.128.7.xip.io openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+master.192.168.128.5.xip.io openshift_node_group_name="node-config-master"
+node1.192.168.128.6.xip.io openshift_node_group_name="node-config-compute"
+infra.192.168.128.7.xip.io openshift_node_group_name="node-config-infra"
 
 [etcd]
 master.192.168.128.5.xip.io

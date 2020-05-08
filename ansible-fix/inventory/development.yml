@@ -57,3 +57,11 @@ all:
         192.168.128.5:
         192.168.128.6:
         192.168.128.7:
+      vars:
+        master_ip: 192.168.128.5
+        node1_ip: 192.168.128.6
+        infra_ip: 192.168.128.7
+        master_hostname: "master.{{ master_ip }}.xip.io"
+        node1_hostname: "node1.{{ node1_ip }}.xip.io"
+        infra_hostname: "infra.{{ infra_ip }}.xip.io"
+
