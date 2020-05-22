@@ -64,4 +64,13 @@ all:
         master_hostname: "master.{{ master_ip }}.xip.io"
         node1_hostname: "node1.{{ node1_ip }}.xip.io"
         infra_hostname: "infra.{{ infra_ip }}.xip.io"
+    hardening:
+      hosts:
+        192.168.128.253:
+      vars:
+        sshd_config: "/root/testfile.txt"
+        system_auth: "/root/testfile.txt"
+        sshd: "/root/testfile.txt"
+        default_grub: "/root/testfile.txt"
+        selinux_config: "/root/testfile.txt"
 

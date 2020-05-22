@@ -1,0 +1,93 @@
+---
+- name: change policy in "{{ sshd_config }}"
+  blockinfile:
+    path: "{{ sshd_config }}"
+    insertafter: "EOF"
+    marker: "{mark}"
+    marker_begin: ""
+    marker_end: ""
+    block: |
+      DenyGroups nossh
+      ClientAliveInterval 900
+      ClientAliveCountMax 0
+      MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+- name: change parameter on "{{ system_auth }}"
+  block:
+    - name: add parameter to pam_unix.so
+      lineinfile:
+        path: "{{ system_auth }}"
+        backrefs: yes
+        regexp: "^(password sufficient pam_unix.so.*)$"
+        line: '\1 parameter=6'
+
+    - name: add rule account required pam_tally2.so
+      lineinfile:
+        path: "{{ system_auth }}"
+        insertafter: 'regex'
+        regexp: "^(account.*)$"
+        line: account required pam_tally2.so deny=3
+
+    # - name: add parameter to pam_pwquality.so
+    #   lineinfile:
+    #     path: {{ system_auth }}
+    #     backrefs: yes
+    #     regexp: "^(password required pam_pwquality.so.*)$"
+    #     line: '\1 try_first_pass retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1'
+
+
+  name: change parameter on "{{ sshd }}"
+  block:
+    - name: add rule account required pam_tally2.so
+      lineinfile:
+        path: "{{ sshd }}"
+        insertafter: 'regex'
+        regexp: "^(account.*)$"
+        line: auth required pam_tally2.so deny=3 onerr=fail unlock_time=900
+
+- name: change {{ default_grub }} parameter
+  lineinfile:
+    path: "{{ default_grub }}"
+    regexp: "^(GRUB_CMDLINE_LINUX.*)$"
+    line: GRUB_CMDLINE_LINUX="audit=1"
+
+- name: change "{{ selinux_config }}" directive
+  lineinfile:
+    path: "{{ selinux_config }}"
+    regexp: "^(SELINUX=.*)$"
+    line: SELINUX=enforcing
+
+- name: change runtime kernel parameter
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '0'
+    state: present
+    reload: yes
+
+- name: Restart service services
+  service:
+    name: 
+      - systemd-udevd
+      - auditd
+    state: restarted
+    enabled: yes
+
+- name: change the owner of file
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.type }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: '/root', type: 'directory', mode: '0700' }
+    - { path: '/etc/resolv.conf', type: 'file', mode: '0644' }
+
+- name: change umask
+  lineinfile:
+    path: "{{ item.file }}"
+    regexp: "umask 022$"
+    line: umask 027
+  loop:
+    - /etc/bashrc
+    - /etc/profile
+    
+
