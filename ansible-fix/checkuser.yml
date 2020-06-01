@@ -1,0 +1,27 @@
+---
+- host: checknode
+  tasks:
+  - name: copy script to node
+    copy:
+      src: "{ scriptfile }"
+      dest: "{ scriptdest }"
+      owner: "{ run-user }"
+      group: "{ run-user }"
+      mode: '0740'
+    
+  - name: execute script file
+    script: "{ scriptdest }"
+
+  - name: collect result
+    copy:
+      remote_src : "{ result_file }"
+      dest: "{ result_dest }"
+      owner: "{ run-user }"
+      group: "{ run-user }"
+
+  - name: delete script and result
+    file:
+      absent: "{ item }"
+    loop: 
+      - "{ result_file }"
+      - "{ scriptdest }"

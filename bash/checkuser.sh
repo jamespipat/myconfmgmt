@@ -19,7 +19,7 @@ fi
 
  
 
-echo 'user--account status--expiration--Account type--sudo permission--no human login' >> /root/checkuser.txt
+echo 'user  |  account status  |  expiration  |  Account type  | sudo permission  |  no human login' >> /root/checkuser.txt
 for user in ${myuser[@]}; do
     #check account status
     comstatus=$(egrep "^$user.*\!\!|^$user.*\*" /etc/shadow)
@@ -37,7 +37,7 @@ for user in ${myuser[@]}; do
     if [[ $expire -eq 45 ]]; then
         expireval='45days'
     else
-        expireval='Never'
+        expireval="$expire"
     fi
 
  
@@ -70,7 +70,7 @@ for user in ${myuser[@]}; do
     else
         nohuman='no'
     fi
-    echo "$user--$status--$expireval--$uid--$sudoperm--$nohuman" >> /root/checkuser.txt
+    echo "$user  |  $status  |  $expireval  |  $uid  |  $sudoperm  |  $nohuman" >> /root/checkuser.txt
 
  
 
